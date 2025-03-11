@@ -104,3 +104,12 @@ and retrieve individual alarm entries with `alarmStateListGetAtIndex` in
 The source code directory contains a test case in main.cpp which you can use to test the
 code and see how the above functions are used.
 
+## Simulation environment
+
+TODO
+
+## Support tools
+
+TODO
+
+
