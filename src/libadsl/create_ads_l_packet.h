@@ -1,8 +1,12 @@
 //
 // OCAP - Open Collision Avoidance Protocol
 //
+// Creating an ADS-L packet from GPS and configuration data.
+//
+// 10.07.2024 ASR  First version.
+//
 // Software License (BSD):
-// Copyright 2024-2025 Classy Code GmbH.
+// Copyright 2024 Classy Code GmbH.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 // 1. Redistributions of source code must retain the above copyright notice,
@@ -25,4 +29,21 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 // DAMAGE.
 //
+
+#ifndef __CREATE_ADS_L_PACKET_H__
+#define __CREATE_ADS_L_PACKET_H__ 1
+
+#include "gps_data.h"
+#include "aircraft_config.h"
+#include "ads_l_packet_iconspicuity.h"
+#include "ads_l_packet_iconspicuity2.h"
+
+void createAdslPacket(SGpsData *gpsData, SAircraftConfig *cfg, SAdslIConspicuity *adsl);
+
+// Provide Z elements as multiples of 0.125*v.
+// Provide a spheric path model for r<15*v and linear for r>2024*v.
+void createAdslPacket2(SGpsData *gpsData, SAircraftConfig *cfg,
+  int zV8[3], EAdslIConspicuity2PathModel pathModel, SAdslIConspicuity2 *adsl);
+
+#endif // __CREATE_ADS_L_PACKET_H__
 

@@ -1,8 +1,13 @@
 //
 // OCAP - Open Collision Avoidance Protocol
 //
+// ADS-L iConspicuity Packet Definition
+// (Proposed extension to EASA ADS-L 4 SRD860 Issue 1)
+//
+// 11.10.2024 ASR  First version.
+//
 // Software License (BSD):
-// Copyright 2024-2025 Classy Code GmbH.
+// Copyright 2024 Classy Code GmbH.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 // 1. Redistributions of source code must retain the above copyright notice,
@@ -26,3 +31,34 @@
 // DAMAGE.
 //
 
+#ifndef __ADS_L_PACKET_ICONSPICUITY2_H__
+#define __ADS_L_PACKET_ICONSPICUITY2_H__ 1
+
+#include "ads_l_packet_iconspicuity.h"
+
+typedef enum {
+	ADSL_ICONSP2_PATH_MODEL_LINEAR = 0,
+	ADSL_ICONSP2_PATH_MODEL_SPHERIC = 1,
+	ADSL_ICONSP2_PATH_MODEL_ARC = 2,
+	// Reserved 3
+} EAdslIConspicuity2PathModel;
+
+typedef struct {
+	// Base iConspicuity packet.
+
+	SAdslIConspicuity iconspicuity;
+
+	// Additional payload.
+
+	// - Recommended model to be used by the receiver for flight path extrapolation.
+	EAdslIConspicuity2PathModel pathModel;
+
+	// - Vector from location to flight path center.
+	// Each component is a scaled 10-bit (1+3+6) value
+	// (-16192..1..16192, projected to -2024..0.125..2024).
+	// The vector (in units of the velocity) points from our position to Z.
+	int z[3]; // x, y, z
+
+} SAdslIConspicuity2;
+
+#endif // __ADS_L_PACKET_ICONSPICUITY2_H__

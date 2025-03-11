@@ -1,8 +1,12 @@
 //
 // OCAP - Open Collision Avoidance Protocol
 //
+// Aircraft configuration data.
+//
+// 10.07.2024 ASR  First version.
+//
 // Software License (BSD):
-// Copyright 2024-2025 Classy Code GmbH.
+// Copyright 2024 Classy Code GmbH.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 // 1. Redistributions of source code must retain the above copyright notice,
@@ -26,3 +30,26 @@
 // DAMAGE.
 //
 
+#ifndef __AIRCRAFT_CONFIG_H__
+#define __AIRCRAFT_CONFIG_H__ 1
+
+#include <inttypes.h>
+#include "ads_l_packet_iconspicuity.h"
+
+typedef struct {
+
+	// - Address mapping table (0..63)
+	int addrMapEntry;
+
+	// - Address [Manufacturer:8 BaseAddress:16]
+	int addr;
+
+	// - Flight state
+	EAdslIConspicuityFlightState flightState;
+
+	// - Aircraft category
+	EAdslIConspicuityAircraftCategory acftCategory;
+
+} SAircraftConfig;
+
+#endif // __AIRCRAFT_CONFIG_H__

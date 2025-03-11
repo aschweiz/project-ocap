@@ -1,8 +1,13 @@
 //
 // OCAP - Open Collision Avoidance Protocol
 //
+// ADS-L CRC algorithm
+// (Based on EASA ADS-L 4 SRD860 Issue 1)
+//
+// 11.07.2024 ASR  First version.
+//
 // Software License (BSD):
-// Copyright 2024-2025 Classy Code GmbH.
+// Copyright 2024 Classy Code GmbH.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 // 1. Redistributions of source code must retain the above copyright notice,
@@ -26,3 +31,13 @@
 // DAMAGE.
 //
 
+#ifndef __ADS_L_CRC_H__
+#define __ADS_L_CRC_H__ 1
+
+#include <inttypes.h>
+
+// The CRC is calculated over 21 or 25 bytes (version+flags:1, data:20 or 24)
+// Take the lower 24 bits.
+uint32_t adslCrc(uint8_t *data21or25, int len);
+
+#endif // __ADS_L_CRC_H__

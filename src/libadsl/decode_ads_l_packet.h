@@ -1,8 +1,12 @@
 //
 // OCAP - Open Collision Avoidance Protocol
 //
+// Decoding an ADS-L packet to GPS and configuration data.
+//
+// 11.07.2024 ASR  First version.
+//
 // Software License (BSD):
-// Copyright 2024-2025 Classy Code GmbH.
+// Copyright 2024 Classy Code GmbH.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 // 1. Redistributions of source code must retain the above copyright notice,
@@ -26,3 +30,19 @@
 // DAMAGE.
 //
 
+#ifndef __DECODE_ADS_L_PACKET_H__
+#define __DECODE_ADS_L_PACKET_H__ 1
+
+#include "gps_data.h"
+#include "aircraft_config.h"
+#include "ads_l_packet_iconspicuity.h"
+#include "ads_l_packet_iconspicuity2.h"
+
+void decodeAdslPacket(SAdslIConspicuity *adsl, SGpsData *gpsData, SAircraftConfig *cfg);
+
+// Z elements are multiples of 0.125*v.
+// Spheric path model for r<15*v and linear for r>2024*v.
+void decodeAdslPacket2(SAdslIConspicuity2 *adsl, SGpsData *gpsData, SAircraftConfig *cfg,
+  int zV8[3], EAdslIConspicuity2PathModel *pathModel);
+
+#endif // __DECODE_ADS_L_PACKET_H__

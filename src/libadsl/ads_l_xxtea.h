@@ -1,8 +1,18 @@
 //
 // OCAP - Open Collision Avoidance Protocol
 //
+// ADS-L XXTEA algorithm
+// (Based on EASA ADS-L 4 SRD860 Issue 1)
+//
+// TODO HIGH !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// TODO HIGH - This code likely depends on the endianness of the architecture
+// TODO HIGH - and may only work on little-endian platforms (ARM, Intel)!
+// TODO HIGH !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//
+// 11.07.2024 ASR  First version.
+//
 // Software License (BSD):
-// Copyright 2024-2025 Classy Code GmbH.
+// Copyright 2024 Classy Code GmbH.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 // 1. Redistributions of source code must retain the above copyright notice,
@@ -25,4 +35,16 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 // DAMAGE.
 //
+
+#ifndef __ADS_L_XXTEA_H__
+#define __ADS_L_XXTEA_H__ 1
+
+#include <inttypes.h>
+
+extern const uint32_t adslXxteaPublicKey[4];
+
+void adslXxteaEncode(uint32_t *data, int lenBytes, const uint32_t key[4]);
+void adslXxteaDecode(uint32_t *data, int lenBytes, const uint32_t key[4]);
+
+#endif // __ADS_L_XXTEA_H__
 
