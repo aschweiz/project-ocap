@@ -43,13 +43,13 @@ typedef enum {
 	ADSL_DECODE_INVALID_PACKET_TYPE,
 } EAdslDecodeResult;
 
-// Decodes the Data link frame, header and payload.
+// Decodes the data link frame, header and payload from data22 into the packet.
 EAdslDecodeResult adslDecodeIConspicuity(
-	uint8_t *data22, SAdslIConspicuity *packet, int verifyPacketType);
+	const uint8_t *data22, SAdslIConspicuity *packet, int verifyPacketType);
 
-// Decodes the Data link frame, header and payload.
+// Decodes the data link frame, header and payload from data26 into the packet.
 EAdslDecodeResult adslDecodeIConspicuity2(
-	uint8_t *data26, SAdslIConspicuity2 *packet);
+	const uint8_t *data26, SAdslIConspicuity2 *packet);
 
 #endif // __ADS_L_DECODE_ICONSPICUITY_H__
 

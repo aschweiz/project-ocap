@@ -39,66 +39,74 @@ static int unscaleExp_2_6(int v, int isSigned);
 static int unscaleExp_3_6(int v, int isSigned);
 static int unscaleExp_2_12(int v, int isSigned);
 
-void decodeAdslPacket(SAdslIConspicuity *adsl, SGpsData *gpsData, SAircraftConfig *cfg)
+// Extracts GPS and configuration information from an ADS-L packet (typically
+// received from another aircraft) into GPS and configuration data structures.
+void decodeAdslPacket(
+  const SAdslIConspicuity *adslPacketIn,
+  SGpsData *gpsDataOut, SAircraftConfig *cfgOut)
 {
 	// Configuration data
 
-	cfg->addrMapEntry = adsl->addrMapEntry;
-	cfg->addr = adsl->addr; // 24-bit
-	cfg->acftCategory = adsl->acftCategory;
-	cfg->flightState = adsl->flightState;
+	cfgOut->addrMapEntry = adslPacketIn->addrMapEntry;
+	cfgOut->addr = adslPacketIn->addr; // 24-bit
+	cfgOut->acftCategory = adslPacketIn->acftCategory;
+	cfgOut->flightState = adslPacketIn->flightState;
 
 	// GPS data
 
 	// Timestamp
-	gpsData->ts_sec_in_hour = adsl->tsSec4 >> 2; // not really sec_in_hour...
+	gpsDataOut->ts_sec_in_hour = adslPacketIn->tsSec4 >> 2; // not really sec_in_hour...
 
 	// Position
 
-	int64_t lat = (int64_t)(adsl->latDeg93206) * 1e7 / 93206;
-	gpsData->lat_deg_e7 = (int)lat;
-	int64_t lon = (int64_t)(adsl->lonDeg46603) * 1e7 / 46603;
-	gpsData->lon_deg_e7 = (int)lon;
-	gpsData->height_m = unscaleExp_2_12(adsl->altMtr_scaled_2_12, 0) - 320;
+	int64_t lat = (int64_t)(adslPacketIn->latDeg93206) * 1e7 / 93206;
+	gpsDataOut->lat_deg_e7 = (int)lat;
+	int64_t lon = (int64_t)(adslPacketIn->lonDeg46603) * 1e7 / 46603;
+	gpsDataOut->lon_deg_e7 = (int)lon;
+	gpsDataOut->height_m = unscaleExp_2_12(adslPacketIn->altMtr_scaled_2_12, 0) - 320;
 
 	// Velocity
-	gpsData->gspeed_cm_s = unscaleExp_2_6(adsl->gndSpeed, 0) * 25;
-	gpsData->vel_u_cm_s = unscaleExp_2_6(adsl->vSpeed, 1) * 25 / 2;
-	gpsData->heading_deg_e1 = adsl->headingDeg07 * 225 / 32; // * (360/512) * 10
+	gpsDataOut->gspeed_cm_s = unscaleExp_2_6(adslPacketIn->gndSpeed, 0) * 25;
+	gpsDataOut->vel_u_cm_s = unscaleExp_2_6(adslPacketIn->vSpeed, 1) * 25 / 2;
+	gpsDataOut->heading_deg_e1 = adslPacketIn->headingDeg07 * 225 / 32; // * (360/512) * 10
 
 	// Accuracy
-	gpsData->hacc_cm = getHorizontalAccuracyCm(adsl->hAccuracy);
-	gpsData->vacc_cm = getVerticalAccuracyCm(adsl->vAccuracy);
-	gpsData->sacc_cm_s = getGroundSpeedAccuracy(adsl->velAccuracy);
+	gpsDataOut->hacc_cm = getHorizontalAccuracyCm(adslPacketIn->hAccuracy);
+	gpsDataOut->vacc_cm = getVerticalAccuracyCm(adslPacketIn->vAccuracy);
+	gpsDataOut->sacc_cm_s = getGroundSpeedAccuracy(adslPacketIn->velAccuracy);
 }
 
-void decodeAdslPacket2(SAdslIConspicuity2 *adsl, SGpsData *gpsData, SAircraftConfig *cfg,
-  int zV8[3], EAdslIConspicuity2PathModel *pathModel)
+// Z elements are multiples of 0.125*v.
+// Spheric path model for r<15*v and linear for r>2024*v.
+void decodeAdslPacket2(
+  const SAdslIConspicuity2 *adslPacketIn,
+  SGpsData *gpsDataOut, SAircraftConfig *cfgOut,
+  int zV8Out[3], EAdslIConspicuity2PathModel *pathModelOut)
 {
 	// Decode the classic iConspicuity part first.
-	decodeAdslPacket(&adsl->iconspicuity, gpsData, cfg);
+	decodeAdslPacket(&adslPacketIn->iconspicuity, gpsDataOut, cfgOut);
 
 	// Decode the iConspicuity2 part next (Z vector, flight path model).
 
-	EAdslIConspicuity2PathModel m = adsl->pathModel;
-	*pathModel = m;
+	EAdslIConspicuity2PathModel m = adslPacketIn->pathModel;
+	*pathModelOut = m;
 
 	// For the linear path model, the Z vector is ignored.
 	if (m == ADSL_ICONSP2_PATH_MODEL_LINEAR) {
-		zV8[0] = 0;
-		zV8[1] = 0;
-		zV8[2] = 0;
+		zV8Out[0] = 0;
+		zV8Out[1] = 0;
+		zV8Out[2] = 0;
 		return;
 	}
 
 	// Reconstruct the Z vector (distance from aircraft position to center of arc).
-	int zxScaled = adsl->z[0];
-	int zyScaled = adsl->z[1];
-	int zzScaled = adsl->z[2];
+	int zxScaled = adslPacketIn->z[0];
+	int zyScaled = adslPacketIn->z[1];
+	int zzScaled = adslPacketIn->z[2];
 	// Unscaled values are multiples of 0.125*v.
-	zV8[0] = unscaleExp_3_6(zxScaled, 1);
-	zV8[1] = unscaleExp_3_6(zyScaled, 1);
-	zV8[2] = unscaleExp_3_6(zzScaled, 1);
+	zV8Out[0] = unscaleExp_3_6(zxScaled, 1);
+	zV8Out[1] = unscaleExp_3_6(zyScaled, 1);
+	zV8Out[2] = unscaleExp_3_6(zzScaled, 1);
 }
 
 static int getHorizontalAccuracyCm(EAdslIConspicuityHorizontalAccuracy hacc)

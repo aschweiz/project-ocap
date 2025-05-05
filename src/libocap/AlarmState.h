@@ -1,4 +1,6 @@
 //
+// AlarmState.h
+//
 // OCAP - Open Collision Avoidance Protocol
 //
 // Alarm state information.
@@ -30,11 +32,11 @@
 // DAMAGE.
 //
 
-
 #ifndef __ALARM_STATE_H__
 #define __ALARM_STATE_H__ 1
 
 #include "FlightObjectOther.h"
+#include "Vector.h"
 
 typedef enum {
 	ALARM_LEVEL_NONE = 0,
@@ -47,6 +49,7 @@ typedef struct {
 	EAlarmLevel level;
 	int timeToEncounterSec;
 	TFlightObjectOther *flightObject;
+	TVector curDistanceToFlightObject;
 } TAlarmState;
 
 #endif // __ALARM_STATE_H__

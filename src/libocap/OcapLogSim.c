@@ -1,4 +1,6 @@
 //
+// OcapLogSim.c
+//
 // OCAP - Open Collision Avoidance Protocol
 //
 // Logging implementation for using the OCAP library in a simulator.
@@ -32,6 +34,7 @@
 
 #include <stdio.h>
 #include "OcapLog.h"
+
 
 void ocapLogStrInt(const char *str, int i)
 {

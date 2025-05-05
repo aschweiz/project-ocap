@@ -147,4 +147,3 @@ typedef struct {
 } SAdslIConspicuity;
 
 #endif // __ADS_L_PACKET_ICONSPICUITY_H__
-

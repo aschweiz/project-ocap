@@ -38,11 +38,20 @@
 #include "ads_l_packet_iconspicuity.h"
 #include "ads_l_packet_iconspicuity2.h"
 
-void decodeAdslPacket(SAdslIConspicuity *adsl, SGpsData *gpsData, SAircraftConfig *cfg);
+// Extracts GPS and configuration information from an ADS-L packet (typically
+// received from another aircraft) into GPS and configuration data structures.
+void decodeAdslPacket(
+  const SAdslIConspicuity *adslPacketIn,
+  SGpsData *gpsDataOut, SAircraftConfig *cfgOut);
 
+// Extracts GPS and configuration information from an ADS-L packet (typically
+// received from another aircraft) into GPS and configuration data structures
+// as well as path model and Z vector information.
 // Z elements are multiples of 0.125*v.
 // Spheric path model for r<15*v and linear for r>2024*v.
-void decodeAdslPacket2(SAdslIConspicuity2 *adsl, SGpsData *gpsData, SAircraftConfig *cfg,
-  int zV8[3], EAdslIConspicuity2PathModel *pathModel);
+void decodeAdslPacket2(
+  const SAdslIConspicuity2 *adslPacketIn,
+  SGpsData *gpsDataOut, SAircraftConfig *cfgOut,
+  int zV8Out[3], EAdslIConspicuity2PathModel *pathModelOut);
 
 #endif // __DECODE_ADS_L_PACKET_H__

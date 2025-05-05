@@ -40,51 +40,61 @@ static int scaleExp_2_6(int v, int isSigned);
 static int scaleExp_3_6(int v, int isSigned);
 static int scaleExp_2_12(int v, int isSigned);
 
-void createAdslPacket(SGpsData *gpsData, SAircraftConfig *cfg, SAdslIConspicuity *adsl)
+// Fills an ADS-L packet data structure with GPS and configuration information
+// about our aircraft.
+void createAdslPacket(
+  const SGpsData *gpsDataIn, const SAircraftConfig *cfgIn,
+  SAdslIConspicuity *adslOut)
 {
   // Configuration data
 
-	adsl->addrMapEntry = cfg->addrMapEntry;
-	adsl->addr = cfg->addr; // 24-bit
-	adsl->flightState = cfg->flightState;
-	adsl->acftCategory = cfg->acftCategory;
+	adslOut->addrMapEntry = cfgIn->addrMapEntry;
+	adslOut->addr = cfgIn->addr; // 24-bit
+	adslOut->flightState = cfgIn->flightState;
+	adslOut->acftCategory = cfgIn->acftCategory;
 
 	// GPS data
 
 	// Timestamp
-	adsl->tsSec4 = (gpsData->ts_sec_in_hour << 2) % 60; // 0..59s4, 0..15s
+	adslOut->tsSec4 = (gpsDataIn->ts_sec_in_hour << 2) % 60; // 0..59s4, 0..15s
 
 	// Position
-	int64_t lat = (int64_t)(gpsData->lat_deg_e7) * 93206 / 1e7;
-	adsl->latDeg93206 = (int)lat; // 4427285 = 47.5N
-	int64_t lon = (int64_t)(gpsData->lon_deg_e7) * 46603 / 1e7;
-	adsl->lonDeg46603 = (int)lon; // -396126 = 8.5W
-	adsl->altMtr_scaled_2_12 = scaleExp_2_12(gpsData->height_m + 320, 0); // 0x0528 = 1000m
+	int64_t lat = (int64_t)(gpsDataIn->lat_deg_e7) * 93206 / 1e7;
+	adslOut->latDeg93206 = (int)lat; // 4427285 = 47.5N
+	int64_t lon = (int64_t)(gpsDataIn->lon_deg_e7) * 46603 / 1e7;
+	adslOut->lonDeg46603 = (int)lon; // -396126 = 8.5W
+	adslOut->altMtr_scaled_2_12 = scaleExp_2_12(gpsDataIn->height_m + 320, 0); // 0x0528 = 1000m
 
 	// Velocity
-	adsl->gndSpeed = scaleExp_2_6(gpsData->gspeed_cm_s / 25, 0); // 0xc4 = 120m/s
-	int velU = gpsData->vel_u_cm_s * 2;
+	adslOut->gndSpeed = scaleExp_2_6(gpsDataIn->gspeed_cm_s / 25, 0); // 0xc4 = 120m/s
+	int velU = gpsDataIn->vel_u_cm_s * 2;
 	// Divide with "rounding" to next integer.
 	velU = velU >= 0 ? (velU + 12) : (velU - 12);
 	velU /= 25;
-	adsl->vSpeed = scaleExp_2_6(velU, 1);
-	adsl->headingDeg07 = gpsData->heading_deg_e1 * 32 / 225; // / 10 * (512/360)
+	adslOut->vSpeed = scaleExp_2_6(velU, 1);
+	adslOut->headingDeg07 = gpsDataIn->heading_deg_e1 * 32 / 225; // / 10 * (512/360)
 
 	// Accuracy
-	adsl->hAccuracy = getHorizontalAccuracy(gpsData->hacc_cm);
-	adsl->vAccuracy = getVerticalAccuracy(gpsData->vacc_cm);
-	adsl->velAccuracy = getGroundSpeedAccuracy(gpsData->sacc_cm_s);
+	adslOut->hAccuracy = getHorizontalAccuracy(gpsDataIn->hacc_cm);
+	adslOut->vAccuracy = getVerticalAccuracy(gpsDataIn->vacc_cm);
+	adslOut->velAccuracy = getGroundSpeedAccuracy(gpsDataIn->sacc_cm_s);
 }
 
-void createAdslPacket2(SGpsData *gpsData, SAircraftConfig *cfg,
-	int zV8[3], EAdslIConspicuity2PathModel pathModel, SAdslIConspicuity2 *adsl)
+// Fills an extended ADS-L packet data structure with GPS and configuration
+// information about our aircraft, as well as a Z vector and path model.
+// Provide Z elements as multiples of 0.125*v.
+// Provide a spheric path model for r<15*v and linear for r>2024*v.
+void createAdslPacket2(
+  const SGpsData *gpsDataIn, const SAircraftConfig *cfgIn,
+  const int zV8In[3], EAdslIConspicuity2PathModel pathModelIn,
+  SAdslIConspicuity2 *adsl)
 {
-	createAdslPacket(gpsData, cfg, &adsl->iconspicuity);
+	createAdslPacket(gpsDataIn, cfgIn, &adsl->iconspicuity);
 
-	adsl->pathModel = pathModel;
-	adsl->z[0] = scaleExp_3_6(zV8[0], 1);
-	adsl->z[1] = scaleExp_3_6(zV8[1], 1);
-	adsl->z[2] = scaleExp_3_6(zV8[2], 1);
+	adsl->pathModel = pathModelIn;
+	adsl->z[0] = scaleExp_3_6(zV8In[0], 1);
+	adsl->z[1] = scaleExp_3_6(zV8In[1], 1);
+	adsl->z[2] = scaleExp_3_6(zV8In[2], 1);
 }
 
 static EAdslIConspicuityHorizontalAccuracy getHorizontalAccuracy(int haccCm)

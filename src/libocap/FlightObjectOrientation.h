@@ -1,4 +1,6 @@
 //
+// FlightObjectOrientation.h
+//
 // OCAP - Open Collision Avoidance Protocol
 //
 // Getting the orientation of one airplane to another.
@@ -33,8 +35,7 @@
 #ifndef __FLIGHT_OBJECT_ORIENTATION_H__
 #define __FLIGHT_OBJECT_ORIENTATION_H__ 1
 
-#include "FlightObjectOwn.h"
-#include "FlightObjectOther.h"
+#include "Vector.h"
 
 typedef struct {
   int directionDeg;   // 0=ahead, -90=left, +90=right, 180=behind
@@ -44,7 +45,7 @@ typedef struct {
 // Returns 1 if the calculation was possible, 0 if not.
 int flightObjectOrientationCalculate(
   TFlightObjectOrientation *result,
-  TFlightObjectOwn *fOrigin,
-  TFlightObjectOther *fOther);
+  TVector *ownToOther,
+  TVector *ownSpeed);
 
 #endif // __FLIGHT_OBJECT_H__

@@ -1,4 +1,6 @@
 //
+// AlarmStateList.h
+//
 // OCAP - Open Collision Avoidance Protocol
 //
 // Alarm state information.
@@ -30,22 +32,21 @@
 // DAMAGE.
 //
 
-
 #ifndef __ALARM_STATE_LIST_H__
 #define __ALARM_STATE_LIST_H__ 1
-
 
 #include "AlarmState.h"
 #include "FlightObjectOther.h"
 #include "Configuration.h"
-
 
 void alarmStateListClear(void);
 
 int alarmStateListGetCount(void);
 TAlarmState *alarmStateListGetAtIndex(int ix);
 
-void alarmStateListAdd(TFlightObjectOther *f, EAlarmLevel l, int timeToEncounterSec);
+// Returns the added alarm state.
+TAlarmState *alarmStateListAdd(
+  TFlightObjectOther *f, EAlarmLevel l, int timeToEncounterSec);
 
 #if OCAP_SIMULATION == 1
 void alarmStateListDump(void);

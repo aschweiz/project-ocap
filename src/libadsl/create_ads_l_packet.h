@@ -38,12 +38,19 @@
 #include "ads_l_packet_iconspicuity.h"
 #include "ads_l_packet_iconspicuity2.h"
 
-void createAdslPacket(SGpsData *gpsData, SAircraftConfig *cfg, SAdslIConspicuity *adsl);
+// Fills an ADS-L packet data structure with GPS and configuration information
+// about our aircraft.
+void createAdslPacket(
+  const SGpsData *gpsDataIn, const SAircraftConfig *cfgIn,
+  SAdslIConspicuity *adslOut);
 
+// Fills an extended ADS-L packet data structure with GPS and configuration
+// information about our aircraft, as well as a Z vector and path model.
 // Provide Z elements as multiples of 0.125*v.
 // Provide a spheric path model for r<15*v and linear for r>2024*v.
-void createAdslPacket2(SGpsData *gpsData, SAircraftConfig *cfg,
-  int zV8[3], EAdslIConspicuity2PathModel pathModel, SAdslIConspicuity2 *adsl);
+void createAdslPacket2(
+  const SGpsData *gpsDataIn, const SAircraftConfig *cfgIn,
+  const int zV8In[3], EAdslIConspicuity2PathModel pathModelIn,
+  SAdslIConspicuity2 *adsl);
 
 #endif // __CREATE_ADS_L_PACKET_H__
-

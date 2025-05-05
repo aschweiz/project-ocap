@@ -1,4 +1,6 @@
 //
+// AlarmStateList.c
+//
 // OCAP - Open Collision Avoidance Protocol
 //
 // Alarm state list information.
@@ -30,10 +32,8 @@
 // DAMAGE.
 //
 
-
 #include "OcapLog.h"
 #include "AlarmStateList.h"
-
 
 // Calculating this value ad-hoc will save space but increase computing time on insert.
 #define ALARM_STATE_PRIO(l, t) (100 * (int)l + (T_MAX_SEC - t))
@@ -67,7 +67,8 @@ TAlarmState *alarmStateListGetAtIndex(int ix)
 	return a;
 }
 
-void alarmStateListAdd(TFlightObjectOther *f, EAlarmLevel l, int timeToEncounterSec)
+TAlarmState *alarmStateListAdd(
+	TFlightObjectOther *f, EAlarmLevel l, int timeToEncounterSec)
 {
 	int newPrio = ALARM_STATE_PRIO(l, timeToEncounterSec);
 
@@ -81,7 +82,7 @@ void alarmStateListAdd(TFlightObjectOther *f, EAlarmLevel l, int timeToEncounter
 				ocapLogStrIntInt("ALARM-UPD", a->level, a->timeToEncounterSec);
 				alarmStateListSort();
 			}
-			return;
+			return a;
 		}
 	}
 
@@ -96,7 +97,7 @@ void alarmStateListAdd(TFlightObjectOther *f, EAlarmLevel l, int timeToEncounter
 		// Don't insert the new alarm state if the list is full and has a lower prio than all existing items.
 		int aLowestPrio = ALARM_STATE_PRIO(aNew->level, aNew->timeToEncounterSec);
 		if (aLowestPrio > newPrio) {
-			return;
+			return NULL;
 		}
 	}
 
@@ -105,6 +106,7 @@ void alarmStateListAdd(TFlightObjectOther *f, EAlarmLevel l, int timeToEncounter
 	aNew->timeToEncounterSec = timeToEncounterSec;
 
 	alarmStateListSort();
+	return aNew;
 }
 
 static void alarmStateListSort(void)

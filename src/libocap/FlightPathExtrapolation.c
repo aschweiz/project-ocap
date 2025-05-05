@@ -1,4 +1,6 @@
 //
+// FlightPathExtrapolation.c
+//
 // OCAP - Open Collision Avoidance Protocol
 //
 // Predicting the future flight path of an object by considering the
@@ -33,7 +35,6 @@
 
 #include "FlightPathExtrapolation.h"
 #include "OcapLog.h"
-
 
 #define ABS_D(X) ((X < 0) ? (-X) : (X))
 

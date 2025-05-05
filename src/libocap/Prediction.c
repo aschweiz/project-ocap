@@ -1,4 +1,6 @@
 //
+// Prediction.c
+//
 // OCAP - Open Collision Avoidance Protocol
 //
 // Algorithm for detecting potential collisions.
@@ -30,6 +32,7 @@
 // DAMAGE.
 //
 
+#include <stddef.h>
 #include "Configuration.h"
 #include "FlightObjectOwn.h"
 #include "FlightObjectOther.h"
@@ -68,7 +71,7 @@ static void predictionExtrapolateOwnFlightPath(
 static void predictionPrepareExtrapolationOtherFlightPath(
 	TFlightObjectOther *f, uint32_t ts);
 
-static void predictionCalculateAlarmStateForFlightObject(
+static TAlarmState *predictionCalculateAlarmStateForFlightObject(
 	int t,
 	TVector *posSelf, float vOwnMsSqu,
 	TFlightObjectOther *f, TVector *posF, float vFmsSqu);
@@ -115,6 +118,10 @@ void predictionCalculateAlarmStates(uint32_t ts)
 			+ fOther->vel_i0.z * fOther->vel_i0.z;
 
 		// Extrapolate into the future and check for potential collisions.
+		// We remember the current distance (at t=0) to the other aircraft
+		// in the alarm state, if an alarm state is generated.
+		TAlarmState *alarmStateForOther = NULL;
+		TVector distToOther;
 		for (int t = 0; t < T_MAX_SEC; t += T_DELTA_SEC) {
 
 			flightPathExtrapolationExecute(&sFpe);
@@ -123,6 +130,12 @@ void predictionCalculateAlarmStates(uint32_t ts)
 			TVector *ownPos = &sOwnFlightPath[t];
 			float ownVelMsSqu = sOwnVelMsSqu[t];
 			TVector *otherPos = &sFpe.ri_vec;
+
+			// Remember the distance at t=0 to store it in a potential alarm state.
+			if (t == 0) {
+				vectorCopy(&distToOther, otherPos);
+				vectorSubtractVector(&distToOther, ownPos);
+			}
 
 			// Provide predicted flight paths to the simulation code.
 			if (sOtherFlightPath && sOtherFlightPathIdNr) {
@@ -137,8 +150,15 @@ void predictionCalculateAlarmStates(uint32_t ts)
 				ocapLogFlOtherPath1(otherPos, t);
 			}
 
-			predictionCalculateAlarmStateForFlightObject(
+			TAlarmState *newAlarmState = predictionCalculateAlarmStateForFlightObject(
 				t, ownPos, ownVelMsSqu, fOther, otherPos, vOtherMsSqu);
+			if (newAlarmState) {
+				alarmStateForOther = newAlarmState;
+			}
+		}
+
+		if (alarmStateForOther) {
+			vectorCopy(&alarmStateForOther->curDistanceToFlightObject, &distToOther);
 		}
 	}
 
@@ -278,7 +298,7 @@ static void predictionPrepareExtrapolationOtherFlightPath(
 	f->ts = ts;
 }
 
-static void predictionCalculateAlarmStateForFlightObject(
+static TAlarmState *predictionCalculateAlarmStateForFlightObject(
 	int t,
 	TVector *posSelf, float vOwnMsSqu,
 	TFlightObjectOther *f, TVector *posF, float vFmsSqu)
@@ -294,7 +314,7 @@ static void predictionCalculateAlarmStateForFlightObject(
 
 	// Only check if within the limit.
 	if (distMtrSqu > DIST_MTR_SQU_CHECK_LIMIT) {
-		return;
+		return NULL;
 	}
 
 	uint32_t distMtrSquInt = (uint32_t)distMtrSqu;
@@ -331,10 +351,11 @@ static void predictionCalculateAlarmStateForFlightObject(
 	}
 
 	if (newAlarmLevel == 0) {
-		return;
+		return NULL;
 	}
 
 //	ocapLogStrInt("OCAP-ALARM-LVL", (int)newAlarmLevel);
 
-	alarmStateListAdd(f, newAlarmLevel, t);
+	TAlarmState *alarmState = alarmStateListAdd(f, newAlarmLevel, t);
+	return alarmState;
 }

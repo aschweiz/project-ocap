@@ -1,4 +1,6 @@
 //
+// FlightObjectOwn.h
+//
 // OCAP - Open Collision Avoidance Protocol
 //
 // Information on our own flight object (paraglider, helicopter,
@@ -39,7 +41,6 @@
 #include "Vector.h"
 #include "FlightObjectState.h"
 #include "FlightPathExtrapolation.h"
-
 
 typedef struct {
 	uint32_t id; // 0x004E7593

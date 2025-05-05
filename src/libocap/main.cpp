@@ -197,12 +197,4 @@ static void testPrediction(void)
 	// Show the result.
 
 	alarmStateListDump();
-
-	TFlightObjectOrientation fo;
-
-	int hasOrientation = flightObjectOrientationCalculate(&fo, ownFlightObject, otherFlightObject);
-	printf("other: hasOrientation = %d  (angle=%d deg, dist=%d mtr)\n", hasOrientation, fo.directionDeg, fo.distanceMeters);
-
-	hasOrientation = flightObjectOrientationCalculate(&fo, ownFlightObject, thirdFlightObject);
-	printf("third: hasOrientation = %d  (angle=%d deg, dist=%d mtr)\n", hasOrientation, fo.directionDeg, fo.distanceMeters);
 }

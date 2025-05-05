@@ -36,8 +36,9 @@
 
 #include <inttypes.h>
 
-// The CRC is calculated over 21 or 25 bytes (version+flags:1, data:20 or 24)
-// Take the lower 24 bits.
-uint32_t adslCrc(uint8_t *data21or25, int len);
+// The CRC is calculated over the provided data bytes,
+// typically 21 or 25 bytes (version+flags:1, data:20 or 24).
+// Take the lower 24 bits of the result.
+uint32_t adslCrc(const uint8_t *data, int len);
 
 #endif // __ADS_L_CRC_H__

@@ -38,8 +38,10 @@ static uint32_t crc24(const uint8_t *data, int len_data);
 static uint32_t crc24_polypass(uint32_t crc, uint8_t input);
 
 
-// The CRC is calculated over 21 bytes (version+flags:1, data:20)
-uint32_t adslCrc(uint8_t *data21or25, int len)
+// The CRC is calculated over the provided data bytes,
+// typically 21 or 25 bytes (version+flags:1, data:20 or 24).
+// Take the lower 24 bits of the result.
+uint32_t adslCrc(const uint8_t *data21or25, int len)
 {
   return crc24(data21or25, len);
 }

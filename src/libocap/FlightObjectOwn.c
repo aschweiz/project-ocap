@@ -1,4 +1,6 @@
 //
+// FlightObjectOwn.c
+//
 // OCAP - Open Collision Avoidance Protocol
 //
 // Information on our own flight object (paraglider, helicopter,

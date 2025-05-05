@@ -37,13 +37,19 @@
 #include "ads_l_packet_iconspicuity.h"
 #include "ads_l_packet_iconspicuity2.h"
 
-// Fills the Data link frame, header and payload, but not the 24-bit CRC.
-// Without the CRC, the packet is 22 bytes, with CRC it's 25 bytes.
-void adslEncodeIConspicuity(SAdslIConspicuity *packet, uint8_t *data22);
+// Serializes the data in the provided packet for transmission, including the
+// data link frame, header and payload but not including the 24-bit CRC.
+// The data buffer needs to be able to hold at least 22 bytes (or 25 bytes, if
+// the CRC will be added later).
+// Returns 0 on success, -1 if the data buffer is too small.
+int adslEncodeIConspicuity(const SAdslIConspicuity *packet, uint8_t *data, int len);
 
-// Fills the Data link frame, header and payload, but not the 24-bit CRC.
-// Without the CRC, the packet is 26 bytes, with CRC it's 29 bytes.
-void adslEncodeIConspicuity2(SAdslIConspicuity2 *packet, uint8_t *data26);
+// Serializes the data in the provided packet for transmission, including the
+// data link frame, header and payload but not including the 24-bit CRC.
+// The data buffer needs to be able to hold at least 26 bytes (or 29 bytes, if
+// the CRC will be added later).
+// Returns 0 on success, -1 if the data buffer is too small.
+int adslEncodeIConspicuity2(const SAdslIConspicuity2 *packet, uint8_t *data, int len);
 
 #endif // __ADS_L_ENCODE_ICONSPICUITY_H__
 

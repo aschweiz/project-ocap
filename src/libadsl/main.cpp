@@ -60,8 +60,6 @@ static void showTestResult();
 
 int main(int argc, char *argv[])
 {
-	uint8_t adslData22[22];
-
 	std::cout << "libadsl-test" << std::endl;
 
 	testIConspicuity();
@@ -89,8 +87,6 @@ static void testIConspicuityV2()
 
 static void testEncoding(uint8_t *dataOut22)
 {
-	std::cout << "testEncoding" << std::endl;
-
 	SGpsData gpsData;
 	gpsData.ts_sec_in_hour = 200;
 	gpsData.lat_deg_e7 = 475000000; // 47.5N
@@ -117,7 +113,7 @@ static void testEncoding(uint8_t *dataOut22)
 	createAdslPacket(&gpsData, &aircraftConfig, &adslPacket);
 
 	// From ADS-L iConspicuity packet to data bytes for transfer.
-	adslEncodeIConspicuity(&adslPacket, dataOut22);
+	adslEncodeIConspicuity(&adslPacket, dataOut22, 22);
 
 	showBytes(dataOut22, 22);
 
@@ -131,8 +127,6 @@ static void testEncoding(uint8_t *dataOut22)
 
 static void testDecoding(uint8_t *dataIn22)
 {
-	std::cout << "testDecoding" << std::endl;
-
 	// From data bytes to ADS-L iConspicuity packet.
 	SAdslIConspicuity adslPacket;
 	EAdslDecodeResult result = adslDecodeIConspicuity(dataIn22, &adslPacket, 1);
@@ -161,8 +155,6 @@ static void testDecoding(uint8_t *dataIn22)
 
 static void testEncodingV2(uint8_t *dataOut26)
 {
-	std::cout << "testEncodingV2" << std::endl;
-
 	SGpsData gpsData;
 	gpsData.ts_sec_in_hour = 200;
 	gpsData.lat_deg_e7 = 475000000; // 47.5N
@@ -191,7 +183,7 @@ static void testEncodingV2(uint8_t *dataOut26)
 	createAdslPacket2(&gpsData, &aircraftConfig, &z[0], pm, &adslPacket);
 
 	// From ADS-L iConspicuity2 packet to data bytes for transfer.
-	adslEncodeIConspicuity2(&adslPacket, dataOut26);
+	adslEncodeIConspicuity2(&adslPacket, dataOut26, 26);
 
 	showBytes(dataOut26, 26);
 
@@ -207,8 +199,6 @@ static void testEncodingV2(uint8_t *dataOut26)
 
 static void testDecodingV2(uint8_t *dataIn26)
 {
-	std::cout << "testDecodingV2" << std::endl;
-
 	// From data bytes to ADS-L iConspicuity packet.
 	SAdslIConspicuity2 adslPacket;
 	EAdslDecodeResult result = adslDecodeIConspicuity2(dataIn26, &adslPacket);
@@ -287,9 +277,11 @@ static void assertBytes(std::string msg, uint8_t *bytesExpected, uint8_t *bytesA
 			continue;
 		}
 		allOk = false;
-		std::cout << msg << " " << " Index: " << i
-			<< ", Expected value: " << (int)bytesExpected[i]
-			<< ", Actual alue: " << (int)bytesActual[i]
+		std::cout
+			<< msg << " "
+			<< " Index: " << i
+			<< ", Expected: " << std::hex << (int)bytesExpected[i]
+			<< ", Actual: " << std::hex << (int)bytesActual[i]
 			<< std::endl;
 	}
 	if (!allOk) {

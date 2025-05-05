@@ -1,4 +1,6 @@
 //
+// Configuration.h
+//
 // OCAP - Open Collision Avoidance Protocol
 //
 // Configuration of this library.

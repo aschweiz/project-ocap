@@ -1,4 +1,6 @@
 //
+// FlightObjectOrientation.c
+//
 // OCAP - Open Collision Avoidance Protocol
 //
 // Getting the orientation of one airplane to another.
@@ -36,27 +38,25 @@
 
 int flightObjectOrientationCalculate(
   TFlightObjectOrientation *result,
-  TFlightObjectOwn *fOrigin,
-  TFlightObjectOther *fOther)
+  TVector *ownToOther,
+  TVector *ownSpeed)
 {
-  if (!fOrigin || !fOther) {
+  if (!ownToOther || !ownSpeed) {
     return 0;
   }
 
   // From Origin to Other.
-  TVector d;
-  vectorCopy(&d, &fOther->pos_i0);
-  vectorSubtractVector(&d, &fOrigin->pos_i[0]);
+  TVector *d = ownToOther;
 
-  // Distance.
-  float distMtr = vectorGetLength(&d);
+  // Distance to the other aircraft.
+  float distMtr = vectorGetLength(d);
   result->distanceMeters = (int)distMtr;
 
-  // Angle from Origin to Other.
-  float alpha = atan2(d.y, d.x);
+  // Angle to the other aircraft.
+  float alpha = atan2(d->y, d->x);
 
-  // Angle of Origin's velocity vector.
-  float beta = atan2(fOrigin->vel_i[0].y, fOrigin->vel_i[0].x);
+  // Angle of our velocity vector.
+  float beta = atan2(ownSpeed->y, ownSpeed->x);
 
   // Left = -90, ahead = 0, right = +90.
   float deltaAngle = beta - alpha;

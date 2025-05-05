@@ -34,11 +34,12 @@
 #include <inttypes.h>
 #include "ads_l_decode_iconspicuity.h"
 
-static int decodeSigned24bit(uint8_t *data3);
+static int decodeSigned24bit(const uint8_t *data3);
 static int convertBinaryToSigned(uint32_t v32, int nofBits);
 
+// Decodes the data link frame, header and payload from data22 into the packet.
 EAdslDecodeResult adslDecodeIConspicuity(
-	uint8_t *data22, SAdslIConspicuity *packet, int verifyPacketType)
+	const uint8_t *data22, SAdslIConspicuity *packet, int verifyPacketType)
 {
 	// 0:8, Packet length
 	// data22[0]
@@ -101,8 +102,9 @@ EAdslDecodeResult adslDecodeIConspicuity(
 	return ADSL_DECODE_SUCCESS;
 }
 
-// Decodes the Data link frame, header and payload.
-EAdslDecodeResult adslDecodeIConspicuity2(uint8_t *data26, SAdslIConspicuity2 *packet)
+// Decodes the data link frame, header and payload from data26 into the packet.
+EAdslDecodeResult adslDecodeIConspicuity2(
+	const uint8_t *data26, SAdslIConspicuity2 *packet)
 {
 	// 0:8, Packet length
 	// data22[0]
@@ -140,7 +142,7 @@ EAdslDecodeResult adslDecodeIConspicuity2(uint8_t *data26, SAdslIConspicuity2 *p
 }
 
 
-static int decodeSigned24bit(uint8_t *data3)
+static int decodeSigned24bit(const uint8_t *data3)
 {
 	uint32_t v32 = ((uint32_t)data3[0] << 16)
 		| ((uint32_t)data3[1] << 8)
@@ -164,4 +166,3 @@ static int convertBinaryToSigned(uint32_t v32, int nofBits)
 	}
 	return v;
 }
-
