@@ -7,7 +7,7 @@
 // 11.07.2024 ASR  First version.
 //
 // Software License (BSD):
-// Copyright 2024 Classy Code GmbH.
+// Copyright 2023-2025 Classy Code GmbH.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 // 1. Redistributions of source code must retain the above copyright notice,
@@ -74,9 +74,9 @@ void adslXxteaDecode(uint32_t *data, int lenBytes, const uint32_t key[4])
 #define MX ((((z>>5)^(y<<2))+((y>>3)^(z<<4)))^((sum^y)+(key[(p&3)^e]^z)) )
 
 void xxtea_encrypt(
-  uint32_t* data,
+  uint32_t *data,
   uint32_t num_data_words,
-  const uint32_t* key,
+  const uint32_t *key,
   uint32_t round)
 {
   uint32_t z, y = data[0], sum = 0, e, DELTA = 0x9e3779b9;

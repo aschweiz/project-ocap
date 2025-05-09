@@ -7,7 +7,7 @@
 // 10.07.2024 ASR  First version.
 //
 // Software License (BSD):
-// Copyright 2024 Classy Code GmbH.
+// Copyright 2023-2025 Classy Code GmbH.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 // 1. Redistributions of source code must retain the above copyright notice,
