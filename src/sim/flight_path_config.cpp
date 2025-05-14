@@ -405,9 +405,6 @@ void FlightPathConfig::YieldSimulationBroadcast(long ms)
     msg.txStartTimeMs = txMs; // s.200 ... s.799
     msg.txDurationMs = 5.0;
 
-    // TODO HIGH recorded packets before september 2024 contain an invalid altitude.
-    // FixPacketAltitude(msg, posNewMtr.Z());
-
     RadioLink::Instance()->Broadcast(msg);
 }
 

@@ -50,6 +50,4 @@ bool DecodeRadioMessage(
     linalg::Vector3d &posMtr, linalg::Vector3d &velMtrSec,
     bool *hasZ, linalg::Vector3d &zVecMtr, EOcapPathModel *pathModel);
 
-void FixPacketAltitude(RadioMessage &msg, int altMtr);
-
 #endif // __ADS_L_INTEGRATION_H__

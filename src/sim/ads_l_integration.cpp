@@ -89,32 +89,26 @@ bool CreateRadioMessage(
     aircraftConfig.acftCategory = ADSL_ICONSP_AIRCRAFT_CATEGORY_UNDEF;
 
     // From GPS and aircraft state to ADS-L iConspicuity packet.
-    if (!zVec) {
-        SAdslIConspicuity adslPacket;
-        createAdslPacket(&gpsData, &aircraftConfig, &adslPacket);
-        // From ADS-L iConspicuity packet to data bytes for transfer.
-        adslEncodeIConspicuity(&adslPacket, &msg->bytes[0], MAX_RADIO_MESSAGE_SIZE_BYTES);
+    SAdslIConspicuity adslPacket;
+    EAdslIConspicuityOcapPathModel pm = ADSL_ICONSP2_PATH_MODEL_LINEAR;
+    int zV8[3] = { 0 };
 
-    } else {
-        SAdslIConspicuity2 adslPacket;
-
+    if (zVec) {
         // This is an 1:1 mapping.
-        EAdslIConspicuity2PathModel pm = (EAdslIConspicuity2PathModel)pathModel;
+        pm = (EAdslIConspicuityOcapPathModel)pathModel;
 
         // The Z vector is encoded as an offset from the current position
         // in .125*v units.
         double v = 0.01 * sqrt(gpsData.gspeed_cm_s * gpsData.gspeed_cm_s + gpsData.vel_u_cm_s * gpsData.vel_u_cm_s);
-        int zV8[3] = {
-            (int)(zVec->X() * 8 / v),
-            (int)(zVec->Y() * 8 / v),
-            (int)(zVec->Z() * 8 / v)
-        };
-
-        createAdslPacket2(&gpsData, &aircraftConfig, zV8, pm, &adslPacket);
-
-        // From ADS-L iConspicuity packet to data bytes for transfer.
-        adslEncodeIConspicuity2(&adslPacket, &msg->bytes[0], MAX_RADIO_MESSAGE_SIZE_BYTES);
+        zV8[0] = (int)(zVec->X() * 8 / v);
+        zV8[1] = (int)(zVec->Y() * 8 / v);
+        zV8[2] = (int)(zVec->Z() * 8 / v);
     }
+
+    createAdslPacket(&gpsData, &aircraftConfig, &adslPacket, pm, &zV8[0]);
+
+    // From ADS-L iConspicuity packet to data bytes for transfer.
+    adslEncodeIConspicuity(&adslPacket, &msg->bytes[0], MAX_RADIO_MESSAGE_SIZE_BYTES);
 
     // Other fields of the message.
     msg->txStartTimeMs = txMs; // s.200 ... s.799
@@ -134,24 +128,20 @@ bool DecodeRadioMessage(
     *hasZ = false;
 
     // From data bytes to ADS-L iConspicuity or iConspicuity2 packet.
-    if (msg.bytes[2] == ADSL_PAYLOAD_TYPE_BROADCAST_ICONSPICUITY) {
-        SAdslIConspicuity adslPacket;
-        EAdslDecodeResult result = adslDecodeIConspicuity(&msg.bytes[0], &adslPacket, 1);
-        if (result != ADSL_DECODE_SUCCESS) {
-            return false;
-        }
-        decodeAdslPacket(&adslPacket, &gpsData, &aircraftConfig);
-
-    } else if (msg.bytes[2] == ADSL_PAYLOAD_TYPE_BROADCAST_ICONSPICUITY2) {
-        SAdslIConspicuity2 adslPacket;
-        EAdslDecodeResult result = adslDecodeIConspicuity2(&msg.bytes[0], &adslPacket);
-        if (result != ADSL_DECODE_SUCCESS) {
-            return false;
-        }
-        int zIntV8[3] = { 0 };
-        EAdslIConspicuity2PathModel pm;
-        decodeAdslPacket2(&adslPacket, &gpsData, &aircraftConfig, &zIntV8[0], &pm);
-        *pathModel = (EOcapPathModel)pm;
+    SAdslIConspicuity adslPacket;
+    EAdslDecodeResult result = adslDecodeIConspicuity(
+        &msg.bytes[0], MAX_RADIO_MESSAGE_SIZE_BYTES, &adslPacket);
+    if (result != ADSL_DECODE_SUCCESS) {
+        return false;
+    }
+    int zIntV8[3] = { 0 };
+    EAdslIConspicuityOcapPathModel pm;
+    decodeAdslPacket(&adslPacket, &gpsData, &aircraftConfig, &pm, &zIntV8[0]);
+    *pathModel = (EOcapPathModel)pm;
+    if (pm == ADSL_ICONSP2_PATH_MODEL_LINEAR) {
+        zVecMtr.Set(0, 0, 0);
+        *hasZ = false;
+    } else {
         // The Z offset is stored in multiples of 0.125 * v.
         double v = 0.01 * sqrt(gpsData.gspeed_cm_s * gpsData.gspeed_cm_s + gpsData.vel_u_cm_s * gpsData.vel_u_cm_s);
         zVecMtr.Set(
@@ -181,24 +171,4 @@ bool DecodeRadioMessage(
     velMtrSec.Set(lonMtrPerSec, latMtrPerSec, (double)gpsData.vel_u_cm_s * 0.01);
 
     return true;
-}
-
-void FixPacketAltitude(RadioMessage &msg, int altMtr)
-{
-    // From data bytes to ADS-L iConspicuity packet.
-    SAdslIConspicuity adslPacket;
-    EAdslDecodeResult result = adslDecodeIConspicuity(&msg.bytes[0], &adslPacket, 1);
-
-    SGpsData gpsData;
-    SAircraftConfig aircraftConfig;
-    decodeAdslPacket(&adslPacket, &gpsData, &aircraftConfig);
-
-    gpsData.height_m = altMtr;
-
-    // From GPS and aircraft state to ADS-L iConspicuity packet.
-    SAdslIConspicuity adslPacketFixed;
-    createAdslPacket(&gpsData, &aircraftConfig, &adslPacketFixed);
-
-    // From ADS-L iConspicuity packet to data bytes for transfer.
-    adslEncodeIConspicuity(&adslPacketFixed, &msg.bytes[0], MAX_RADIO_MESSAGE_SIZE_BYTES);
 }
