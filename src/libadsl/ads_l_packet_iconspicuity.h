@@ -5,6 +5,8 @@
 // (Based on EASA ADS-L 4 SRD860 Issue 1)
 //
 // 10.07.2024 ASR  First version.
+// 14.05.2025 ASR  Updated for consistency with existing implementation
+//                 from Skytraxx and OGN.
 //
 // Software License (BSD):
 // Copyright 2023-2025 Classy Code GmbH.
@@ -87,6 +89,13 @@ typedef enum {
 	ADSL_ICONSP_VELACC_LT_1MPS = 3,
 } EAdslIConspicuityVelocityAccuracy;
 
+typedef enum {
+	ADSL_ICONSP2_PATH_MODEL_LINEAR = 0,
+	ADSL_ICONSP2_PATH_MODEL_SPHERIC = 1,
+	ADSL_ICONSP2_PATH_MODEL_ARC = 2,
+	// Reserved 3
+} EAdslIConspicuityOcapPathModel;
+
 typedef struct {
 	//
 	// Header
@@ -143,6 +152,19 @@ typedef struct {
 
 	// - Velocity accuracy
 	EAdslIConspicuityVelocityAccuracy velAccuracy;
+
+	// --------------- OCAP extension ---------------
+
+	int useOcapExtension;
+
+	// - Recommended model to be used by the receiver for flight path extrapolation.
+	EAdslIConspicuityOcapPathModel pathModel;
+
+	// - Vector from location to flight path center.
+	// Each component is a scaled 10-bit (1+3+6) value
+	// (-16192..1..16192, projected to -2024..0.125..2024).
+	// The vector (in units of the velocity) points from our position to Z.
+	int z[3]; // x, y, z
 
 } SAdslIConspicuity;
 

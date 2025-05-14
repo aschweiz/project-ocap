@@ -4,6 +4,7 @@
 // Creating an ADS-L packet from GPS and configuration data.
 //
 // 10.07.2024 ASR  First version.
+// 14.05.2025 ASR  Merged OCAP extension into IConspicuity packet structure.
 //
 // Software License (BSD):
 // Copyright 2023-2025 Classy Code GmbH.
@@ -36,21 +37,16 @@
 #include "gps_data.h"
 #include "aircraft_config.h"
 #include "ads_l_packet_iconspicuity.h"
-#include "ads_l_packet_iconspicuity2.h"
 
 // Fills an ADS-L packet data structure with GPS and configuration information
 // about our aircraft.
-void createAdslPacket(
-  const SGpsData *gpsDataIn, const SAircraftConfig *cfgIn,
-  SAdslIConspicuity *adslOut);
-
-// Fills an extended ADS-L packet data structure with GPS and configuration
-// information about our aircraft, as well as a Z vector and path model.
+// For spheric and arc path models, the function appends the OCAP extension to
+// the packet, including path model and Z vector information.
 // Provide Z elements as multiples of 0.125*v.
 // Provide a spheric path model for r<15*v and linear for r>2024*v.
-void createAdslPacket2(
+void createAdslPacket(
   const SGpsData *gpsDataIn, const SAircraftConfig *cfgIn,
-  const int zV8In[3], EAdslIConspicuity2PathModel pathModelIn,
-  SAdslIConspicuity2 *adsl);
+  SAdslIConspicuity *adslOut,
+  EAdslIConspicuityOcapPathModel pathModelIn, const int zV8In[3]);
 
 #endif // __CREATE_ADS_L_PACKET_H__

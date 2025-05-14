@@ -4,6 +4,7 @@
 // Decoding an ADS-L packet to GPS and configuration data.
 //
 // 11.07.2024 ASR  First version.
+// 14.05.2025 ASR  Merged OCAP extension into IConspicuity packet structure.
 //
 // Software License (BSD):
 // Copyright 2023-2025 Classy Code GmbH.
@@ -41,9 +42,13 @@ static int unscaleExp_2_12(int v, int isSigned);
 
 // Extracts GPS and configuration information from an ADS-L packet (typically
 // received from another aircraft) into GPS and configuration data structures.
+// If the packet contains an OCAP extension, the corresponding information will
+// be filled into pathModelOut and zV8Out, otherwise, pathModelOut will be set
+// to the linear model.
 void decodeAdslPacket(
   const SAdslIConspicuity *adslPacketIn,
-  SGpsData *gpsDataOut, SAircraftConfig *cfgOut)
+  SGpsData *gpsDataOut, SAircraftConfig *cfgOut,
+  EAdslIConspicuityOcapPathModel *pathModelOut, int zV8Out[3])
 {
 	// Configuration data
 
@@ -74,30 +79,18 @@ void decodeAdslPacket(
 	gpsDataOut->hacc_cm = getHorizontalAccuracyCm(adslPacketIn->hAccuracy);
 	gpsDataOut->vacc_cm = getVerticalAccuracyCm(adslPacketIn->vAccuracy);
 	gpsDataOut->sacc_cm_s = getGroundSpeedAccuracy(adslPacketIn->velAccuracy);
-}
 
-// Z elements are multiples of 0.125*v.
-// Spheric path model for r<15*v and linear for r>2024*v.
-void decodeAdslPacket2(
-  const SAdslIConspicuity2 *adslPacketIn,
-  SGpsData *gpsDataOut, SAircraftConfig *cfgOut,
-  int zV8Out[3], EAdslIConspicuity2PathModel *pathModelOut)
-{
-	// Decode the classic iConspicuity part first.
-	decodeAdslPacket(&adslPacketIn->iconspicuity, gpsDataOut, cfgOut);
-
-	// Decode the iConspicuity2 part next (Z vector, flight path model).
-
-	EAdslIConspicuity2PathModel m = adslPacketIn->pathModel;
-	*pathModelOut = m;
-
-	// For the linear path model, the Z vector is ignored.
-	if (m == ADSL_ICONSP2_PATH_MODEL_LINEAR) {
+	if (!adslPacketIn->useOcapExtension
+		|| adslPacketIn->pathModel == ADSL_ICONSP2_PATH_MODEL_LINEAR) {
+		*pathModelOut = ADSL_ICONSP2_PATH_MODEL_LINEAR;
 		zV8Out[0] = 0;
 		zV8Out[1] = 0;
 		zV8Out[2] = 0;
 		return;
 	}
+
+	// Spheric path model for r<15*v and linear for r>2024*v.
+	*pathModelOut = adslPacketIn->pathModel;
 
 	// Reconstruct the Z vector (distance from aircraft position to center of arc).
 	int zxScaled = adslPacketIn->z[0];

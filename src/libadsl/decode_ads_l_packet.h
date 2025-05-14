@@ -4,6 +4,7 @@
 // Decoding an ADS-L packet to GPS and configuration data.
 //
 // 11.07.2024 ASR  First version.
+// 14.05.2025 ASR  Merged OCAP extension into IConspicuity packet structure.
 //
 // Software License (BSD):
 // Copyright 2023-2025 Classy Code GmbH.
@@ -36,22 +37,16 @@
 #include "gps_data.h"
 #include "aircraft_config.h"
 #include "ads_l_packet_iconspicuity.h"
-#include "ads_l_packet_iconspicuity2.h"
 
 // Extracts GPS and configuration information from an ADS-L packet (typically
 // received from another aircraft) into GPS and configuration data structures.
+// If the packet contains an OCAP extension, the corresponding information will
+// be filled into pathModelOut and zV8Out, otherwise, pathModelOut will be set
+// to the linear model.
 void decodeAdslPacket(
   const SAdslIConspicuity *adslPacketIn,
-  SGpsData *gpsDataOut, SAircraftConfig *cfgOut);
-
-// Extracts GPS and configuration information from an ADS-L packet (typically
-// received from another aircraft) into GPS and configuration data structures
-// as well as path model and Z vector information.
-// Z elements are multiples of 0.125*v.
-// Spheric path model for r<15*v and linear for r>2024*v.
-void decodeAdslPacket2(
-  const SAdslIConspicuity2 *adslPacketIn,
   SGpsData *gpsDataOut, SAircraftConfig *cfgOut,
-  int zV8Out[3], EAdslIConspicuity2PathModel *pathModelOut);
+  EAdslIConspicuityOcapPathModel *pathModelOut, int zV8Out[3]
+);
 
 #endif // __DECODE_ADS_L_PACKET_H__

@@ -5,6 +5,7 @@
 // (Based on EASA ADS-L 4 SRD860 Issue 1)
 //
 // 10.09.2024 ASR  First version.
+// 14.05.2025 ASR  Merged OCAP extension into IConspicuity packet structure.
 //
 // Software License (BSD):
 // Copyright 2023-2025 Classy Code GmbH.
@@ -42,14 +43,16 @@
 
 int gNofFailedAssertions;
 
+static void testIConspicuityCompatibility();
+
 static void testIConspicuity();
 static void testIConspicuityV2();
 
 static void testEncoding(uint8_t *dataOut22);
 static void testDecoding(uint8_t *dataIn22);
 
-static void testEncodingV2(uint8_t *dataOut26);
-static void testDecodingV2(uint8_t *dataIn26);
+static void testEncodingV2(uint8_t *dataOut30);
+static void testDecodingV2(uint8_t *dataIn30);
 
 static void showBytes(uint8_t *bytes, int len);
 
@@ -62,6 +65,8 @@ int main(int argc, char *argv[])
 {
 	std::cout << "libadsl-test" << std::endl;
 
+	testIConspicuityCompatibility();
+
 	testIConspicuity();
 	testIConspicuityV2();
 
@@ -69,9 +74,64 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
+static void testIConspicuityCompatibility()
+{
+	// Test decoding and re-encoding a recorded packet from a Skytraxx device.
+	uint8_t dataIn25[25] = {
+		0x18, 0x00, 0x02, 0xc8, 0x75, 0x56, 0x04, 0x2c,
+		0x07, 0x87, 0x54, 0x43, 0x6e, 0x06, 0x06, 0x00,
+		0xaf, 0x03, 0x00, 0x97, 0x00, 0x5f, 0x0a, 0x35,
+		0x1e
+	};
+
+	// From data bytes to ADS-L iConspicuity packet.
+	SAdslIConspicuity adslPacket;
+	EAdslDecodeResult result = adslDecodeIConspicuity(dataIn25, 25, &adslPacket);
+	assertValue("testIConspicuityCompatibility decode result", ADSL_DECODE_SUCCESS, result);
+
+	SGpsData gpsData;
+	SAircraftConfig aircraftConfig;
+	EAdslIConspicuityOcapPathModel pathModel;
+	int z[3] = { 0 };
+	decodeAdslPacket(&adslPacket, &gpsData, &aircraftConfig, &pathModel, &z[0]);
+
+	assertValue("Lat", 473419200, gpsData.lat_deg_e7, 1);
+	assertValue("Lon",  84728880, gpsData.lon_deg_e7, 1);
+	assertValue("Height",    623, gpsData.height_m, 2);
+	assertValue("Vel_u",       0, gpsData.vel_u_cm_s, 10);
+	assertValue("Gspeed",      0, gpsData.gspeed_cm_s, 10);
+	assertValue("Heading",  2123, gpsData.heading_deg_e1, 10);
+
+	assertValue("hacc",      300, gpsData.hacc_cm);
+	assertValue("vacc",     1500, gpsData.vacc_cm);
+	assertValue("sacc",      300, gpsData.sacc_cm_s);
+
+	assertValue("ID",   0x1159d7, aircraftConfig.addr);
+	assertValue("ID map",      8, aircraftConfig.addrMapEntry);
+	assertValue("Acft",  (int)ADSL_ICONSP_AIRCRAFT_CATEGORY_HANG_PARA_GLIDER, aircraftConfig.acftCategory);
+	assertValue("State", (int)ADSL_ICONSP_FLIGHT_STATE_UNDEF, aircraftConfig.flightState);
+
+	// From GPS and aircraft state to ADS-L iConspicuity packet.
+	SAdslIConspicuity adslPacketOut;
+	int zOut[3] = { 0 };
+	createAdslPacket(
+		&gpsData, &aircraftConfig, &adslPacketOut,
+		ADSL_ICONSP2_PATH_MODEL_LINEAR, zOut);
+
+	// From ADS-L iConspicuity packet to data bytes for transfer.
+	uint8_t dataOut25[25];
+	int encodeResult = adslEncodeIConspicuity(&adslPacket, dataOut25, 25);
+	assertValue("testIConspicuityCompatibility encode result", 0, encodeResult);
+
+	showBytes(dataOut25, 22);
+
+	assertBytes("Packet data", &dataIn25[0], dataOut25, 22);
+}
+
+
 static void testIConspicuity()
 {
-	uint8_t adslData22[22];
+	uint8_t adslData22[22] = { 0 };
 
 	testEncoding(&adslData22[0]);
 	testDecoding(&adslData22[0]);
@@ -79,10 +139,10 @@ static void testIConspicuity()
 
 static void testIConspicuityV2()
 {
-	uint8_t adslData26[26];
+	uint8_t adslData30[30] = { 0 };
 
-	testEncodingV2(&adslData26[0]);
-	testDecodingV2(&adslData26[0]);
+	testEncodingV2(&adslData30[0]);
+	testDecodingV2(&adslData30[0]);
 }
 
 static void testEncoding(uint8_t *dataOut22)
@@ -110,17 +170,21 @@ static void testEncoding(uint8_t *dataOut22)
 
 	// From GPS and aircraft state to ADS-L iConspicuity packet.
 	SAdslIConspicuity adslPacket;
-	createAdslPacket(&gpsData, &aircraftConfig, &adslPacket);
+	int z[3] = { 0 };
+	createAdslPacket(
+		&gpsData, &aircraftConfig, &adslPacket,
+		ADSL_ICONSP2_PATH_MODEL_LINEAR, z);
 
 	// From ADS-L iConspicuity packet to data bytes for transfer.
-	adslEncodeIConspicuity(&adslPacket, dataOut22, 22);
+	int encodeResult = adslEncodeIConspicuity(&adslPacket, dataOut22, 22);
+	assertValue("testEncoding encode result", 0, encodeResult);
 
 	showBytes(dataOut22, 22);
 
 	uint8_t expectedBytes[] = {
-		0x18, 0x00, 0x02, 0x24, 0x48, 0xd1, 0x58, 0x52,
-		0x18, 0x43, 0x8e, 0x15, 0x06, 0x0b, 0x5d, 0x08,
-		0x0e, 0x1e, 0x0c, 0x38, 0x00, 0xfc
+		0x18, 0x00, 0x02, 0x89, 0x15, 0x8d, 0x04, 0x94,
+		0x03, 0x15, 0x8e, 0x43, 0x5d, 0x0b, 0x06, 0x08,
+		0x87, 0x83, 0x41, 0x1c, 0x00, 0x5f
 	};
 	assertBytes("Packet data", &expectedBytes[0], dataOut22, 22);
 }
@@ -129,11 +193,15 @@ static void testDecoding(uint8_t *dataIn22)
 {
 	// From data bytes to ADS-L iConspicuity packet.
 	SAdslIConspicuity adslPacket;
-	EAdslDecodeResult result = adslDecodeIConspicuity(dataIn22, &adslPacket, 1);
+	EAdslDecodeResult result = adslDecodeIConspicuity(
+		dataIn22, 22, &adslPacket);
+	assertValue("testIConspicuityCompatibility decode result", ADSL_DECODE_SUCCESS, result);
 
 	SGpsData gpsData;
 	SAircraftConfig aircraftConfig;
-	decodeAdslPacket(&adslPacket, &gpsData, &aircraftConfig);
+	EAdslIConspicuityOcapPathModel pathModel;
+	int z[3] = { 0 };
+	decodeAdslPacket(&adslPacket, &gpsData, &aircraftConfig, &pathModel, &z[0]);
 
 	assertValue("Lat", 475000000, gpsData.lat_deg_e7, 1);
 	assertValue("Lon",  85000000, gpsData.lon_deg_e7, 1);
@@ -153,7 +221,7 @@ static void testDecoding(uint8_t *dataIn22)
 }
 
 
-static void testEncodingV2(uint8_t *dataOut26)
+static void testEncodingV2(uint8_t *dataOut30)
 {
 	SGpsData gpsData;
 	gpsData.ts_sec_in_hour = 200;
@@ -176,38 +244,44 @@ static void testEncodingV2(uint8_t *dataOut26)
 	aircraftConfig.flightState = ADSL_ICONSP_FLIGHT_STATE_AIRBORNE;
 	aircraftConfig.acftCategory = ADSL_ICONSP_AIRCRAFT_CATEGORY_ROTORCRAFT;
 
-	// From GPS and aircraft state to ADS-L iConspicuity2 packet.
-	SAdslIConspicuity2 adslPacket;
+	// From GPS and aircraft state to ADS-L iConspicuity packet with OCAP extension.
+	SAdslIConspicuity adslPacket;
 	int z[3] = { 14, -333, 1234 };
-	EAdslIConspicuity2PathModel pm = ADSL_ICONSP2_PATH_MODEL_ARC;
-	createAdslPacket2(&gpsData, &aircraftConfig, &z[0], pm, &adslPacket);
+	EAdslIConspicuityOcapPathModel pm = ADSL_ICONSP2_PATH_MODEL_ARC;
+	createAdslPacket(&gpsData, &aircraftConfig, &adslPacket, pm, &z[0]);
 
-	// From ADS-L iConspicuity2 packet to data bytes for transfer.
-	adslEncodeIConspicuity2(&adslPacket, dataOut26, 26);
+	// From ADS-L iConspicuity packet to data bytes for transfer.
+	int encodeResult = adslEncodeIConspicuity(&adslPacket, dataOut30, 30);
+	assertValue("testEncodingV2 encode result", 0, encodeResult);
 
-	showBytes(dataOut26, 26);
+	showBytes(dataOut30, 30);
 
 	uint8_t expectedBytes[] = {
-		0x1c, 0x00, 0x03, 0x24, 0x48, 0xd1, 0x58, 0x52,
-		0x18, 0x43, 0x8e, 0x15, 0x06, 0x0b, 0x5d, 0x08,
-		0x0e, 0x1e, 0x0c, 0x38, 0x00, 0xfc,
+		0x18, 0x00, 0x02, 0x89, 0x15, 0x8d, 0x04, 0x94,
+		0x03, 0x15, 0x8e, 0x43, 0x5d, 0x0b, 0x06, 0x08,
+		0x87, 0x83, 0x41, 0x1c, 0x00, 0xdf,
+		// checksum
+		0x00, 0x00, 0x00,
 		// Path model and Z offset vector:
-		0x80, 0xea, 0x8d, 0x11
+		0x80, 0xea, 0x8d, 0x11,
+		// checksum
+		0xf6
 	};
-	assertBytes("Packet data", &expectedBytes[0], dataOut26, 26);
+	assertBytes("Packet data", &expectedBytes[0], dataOut30, 30);
 }
 
-static void testDecodingV2(uint8_t *dataIn26)
+static void testDecodingV2(uint8_t *dataIn30)
 {
 	// From data bytes to ADS-L iConspicuity packet.
-	SAdslIConspicuity2 adslPacket;
-	EAdslDecodeResult result = adslDecodeIConspicuity2(dataIn26, &adslPacket);
+	SAdslIConspicuity adslPacket;
+	EAdslDecodeResult result = adslDecodeIConspicuity(dataIn30, 30, &adslPacket);
+	assertValue("testIConspicuityCompatibility decode result", ADSL_DECODE_SUCCESS, result);
 
 	SGpsData gpsData;
 	SAircraftConfig aircraftConfig;
 	int z[3] = { 0 };
-	EAdslIConspicuity2PathModel pm;
-	decodeAdslPacket2(&adslPacket, &gpsData, &aircraftConfig, &z[0], &pm);
+	EAdslIConspicuityOcapPathModel pm;
+	decodeAdslPacket(&adslPacket, &gpsData, &aircraftConfig, &pm, &z[0]);
 
 	assertValue("Lat", 475000000, gpsData.lat_deg_e7, 1);
 	assertValue("Lon",  85000000, gpsData.lon_deg_e7, 1);

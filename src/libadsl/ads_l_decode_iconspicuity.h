@@ -5,6 +5,8 @@
 // (Based on EASA ADS-L 4 SRD860 Issue 1)
 //
 // 10.07.2024 ASR  First version.
+// 14.05.2025 ASR  Updated for consistency with existing implementation
+//                 from Skytraxx and OGN.
 //
 // Software License (BSD):
 // Copyright 2023-2025 Classy Code GmbH.
@@ -34,8 +36,8 @@
 #ifndef __ADS_L_DECODE_ICONSPICUITY_H__
 #define __ADS_L_DECODE_ICONSPICUITY_H__ 1
 
+#include <inttypes.h>
 #include "ads_l_packet_iconspicuity.h"
-#include "ads_l_packet_iconspicuity2.h"
 
 typedef enum {
 	ADSL_DECODE_SUCCESS = 0,
@@ -43,13 +45,8 @@ typedef enum {
 	ADSL_DECODE_INVALID_PACKET_TYPE,
 } EAdslDecodeResult;
 
-// Decodes the data link frame, header and payload from data22 into the packet.
+// Decodes the data link frame, header and payload from data into the packet.
 EAdslDecodeResult adslDecodeIConspicuity(
-	const uint8_t *data22, SAdslIConspicuity *packet, int verifyPacketType);
-
-// Decodes the data link frame, header and payload from data26 into the packet.
-EAdslDecodeResult adslDecodeIConspicuity2(
-	const uint8_t *data26, SAdslIConspicuity2 *packet);
+	const uint8_t *data, int len, SAdslIConspicuity *packet);
 
 #endif // __ADS_L_DECODE_ICONSPICUITY_H__
-

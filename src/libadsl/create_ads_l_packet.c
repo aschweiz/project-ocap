@@ -4,6 +4,7 @@
 // Creating an ADS-L packet from GPS and configuration data.
 //
 // 10.07.2024 ASR  First version.
+// 14.05.2025 ASR  Merged OCAP extension into IConspicuity packet structure.
 //
 // Software License (BSD):
 // Copyright 2023-2025 Classy Code GmbH.
@@ -42,9 +43,14 @@ static int scaleExp_2_12(int v, int isSigned);
 
 // Fills an ADS-L packet data structure with GPS and configuration information
 // about our aircraft.
+// For spheric and arc path models, the function appends the OCAP extension to
+// the packet, including path model and Z vector information.
+// Provide Z elements as multiples of 0.125*v.
+// Provide a spheric path model for r<15*v and linear for r>2024*v.
 void createAdslPacket(
   const SGpsData *gpsDataIn, const SAircraftConfig *cfgIn,
-  SAdslIConspicuity *adslOut)
+  SAdslIConspicuity *adslOut,
+  EAdslIConspicuityOcapPathModel pathModelIn, const int zV8In[3])
 {
   // Configuration data
 
@@ -78,23 +84,18 @@ void createAdslPacket(
 	adslOut->hAccuracy = getHorizontalAccuracy(gpsDataIn->hacc_cm);
 	adslOut->vAccuracy = getVerticalAccuracy(gpsDataIn->vacc_cm);
 	adslOut->velAccuracy = getGroundSpeedAccuracy(gpsDataIn->sacc_cm_s);
-}
 
-// Fills an extended ADS-L packet data structure with GPS and configuration
-// information about our aircraft, as well as a Z vector and path model.
-// Provide Z elements as multiples of 0.125*v.
-// Provide a spheric path model for r<15*v and linear for r>2024*v.
-void createAdslPacket2(
-  const SGpsData *gpsDataIn, const SAircraftConfig *cfgIn,
-  const int zV8In[3], EAdslIConspicuity2PathModel pathModelIn,
-  SAdslIConspicuity2 *adsl)
-{
-	createAdslPacket(gpsDataIn, cfgIn, &adsl->iconspicuity);
+	if (pathModelIn == ADSL_ICONSP2_PATH_MODEL_LINEAR) {
+		adslOut->useOcapExtension = 0;
+		return;
+	}
 
-	adsl->pathModel = pathModelIn;
-	adsl->z[0] = scaleExp_3_6(zV8In[0], 1);
-	adsl->z[1] = scaleExp_3_6(zV8In[1], 1);
-	adsl->z[2] = scaleExp_3_6(zV8In[2], 1);
+	adslOut->useOcapExtension = 1;
+
+	adslOut->pathModel = pathModelIn;
+	adslOut->z[0] = scaleExp_3_6(zV8In[0], 1);
+	adslOut->z[1] = scaleExp_3_6(zV8In[1], 1);
+	adslOut->z[2] = scaleExp_3_6(zV8In[2], 1);
 }
 
 static EAdslIConspicuityHorizontalAccuracy getHorizontalAccuracy(int haccCm)

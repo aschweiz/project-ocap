@@ -5,6 +5,8 @@
 // (Based on EASA ADS-L 4 SRD860 Issue 1)
 //
 // 10.07.2024 ASR  First version.
+// 14.05.2025 ASR  Updated for consistency with existing implementation
+//                 from Skytraxx and OGN.
 //
 // Software License (BSD):
 // Copyright 2023-2025 Classy Code GmbH.
@@ -34,22 +36,15 @@
 #ifndef __ADS_L_ENCODE_ICONSPICUITY_H__
 #define __ADS_L_ENCODE_ICONSPICUITY_H__ 1
 
+#include <inttypes.h>
 #include "ads_l_packet_iconspicuity.h"
-#include "ads_l_packet_iconspicuity2.h"
 
 // Serializes the data in the provided packet for transmission, including the
 // data link frame, header and payload but not including the 24-bit CRC.
 // The data buffer needs to be able to hold at least 22 bytes (or 25 bytes, if
-// the CRC will be added later).
+// the CRC will be added later) for standard IConspicuity packets and at least
+// 30 bytes for packets with OCAP extension.
 // Returns 0 on success, -1 if the data buffer is too small.
 int adslEncodeIConspicuity(const SAdslIConspicuity *packet, uint8_t *data, int len);
 
-// Serializes the data in the provided packet for transmission, including the
-// data link frame, header and payload but not including the 24-bit CRC.
-// The data buffer needs to be able to hold at least 26 bytes (or 29 bytes, if
-// the CRC will be added later).
-// Returns 0 on success, -1 if the data buffer is too small.
-int adslEncodeIConspicuity2(const SAdslIConspicuity2 *packet, uint8_t *data, int len);
-
 #endif // __ADS_L_ENCODE_ICONSPICUITY_H__
-
