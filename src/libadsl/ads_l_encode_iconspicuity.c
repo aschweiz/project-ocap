@@ -74,7 +74,7 @@ int adslEncodeIConspicuity(const SAdslIConspicuity *packet, uint8_t *data, int l
 	uint32_t addr6v2 = addr6 & 0x00c0c0c0;
 	uint32_t addr6v6 = addr6 & 0x3f3f3f00;
 	uint32_t addr6w = addr6v2 | addr6v6;
-	data[3] = d3a | addr6w & 0xff;
+	data[3] = d3a | (addr6w & 0xff);
 	addr6w >>= 8;
 	data[4] = addr6w & 0xff;
 	addr6w >>= 8;

@@ -42,7 +42,6 @@ void adslXxteaEncodeWithPubkey(uint32_t *data, int lenWords)
 
     for (int i = 0; i < 6; i++) {
     	sum += 0x9e3779b9;
-      uint32_t e = (sum >> 2) & 3;
       for (int p = 0; p <= lenWords - 1; p++) {
       	y = p == 4 ? data[0] : data[p + 1];
         z = data[p] += (((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + z));
@@ -56,7 +55,6 @@ void adslXxteaDecodeWithPubkey(uint32_t *data, int lenWords)
   uint32_t y = data[0];
   uint32_t z = 0;
   for (int i = 0; i < 6; i++) {
-    uint32_t e = (sum >> 2) & 3;
     for (int p = lenWords - 1; p >= 0; p--) {
       z = data[(p + 4) % 5];
       y = data[p] -= (((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + z));
