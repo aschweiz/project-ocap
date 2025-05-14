@@ -4,12 +4,8 @@
 // ADS-L XXTEA algorithm
 // (Based on EASA ADS-L 4 SRD860 Issue 1)
 //
-// TODO HIGH !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// TODO HIGH - This code likely depends on the endianness of the architecture
-// TODO HIGH - and may only work on little-endian platforms (ARM, Intel)!
-// TODO HIGH !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//
 // 11.07.2024 ASR  First version.
+// 14.05.2025 ASR  Integrated pubkey into functions for simplification.
 //
 // Software License (BSD):
 // Copyright 2023-2025 Classy Code GmbH.
@@ -41,10 +37,10 @@
 
 #include <inttypes.h>
 
-extern const uint32_t adslXxteaPublicKey[4];
+// Make sure to use LITTLE-ENDIAN logic when converting from bytes to uint32_t!
+void adslXxteaEncodeWithPubkey(uint32_t *data, int lenWords);
 
-void adslXxteaEncode(uint32_t *data, int lenBytes, const uint32_t key[4]);
-void adslXxteaDecode(uint32_t *data, int lenBytes, const uint32_t key[4]);
+// Make sure to use LITTLE-ENDIAN logic when converting from uint32_t to bytes!
+void adslXxteaDecodeWithPubkey(uint32_t *data, int lenWords);
 
 #endif // __ADS_L_XXTEA_H__
-

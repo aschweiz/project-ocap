@@ -5,6 +5,7 @@
 // (Based on EASA ADS-L 4 SRD860 Issue 1)
 //
 // 11.07.2024 ASR  First version.
+// 14.05.2025 ASR  Integrated pubkey into functions for simplification.
 //
 // Software License (BSD):
 // Copyright 2023-2025 Classy Code GmbH.
@@ -33,9 +34,7 @@
 
 #include "ads_l_xxtea.h"
 
-const uint32_t adslXxteaPublicKey[4] = {0, 0, 0, 0};
-
-void adslXxteaEncode(uint32_t *data, int lenBytes, const uint32_t key[4])
+void adslXxteaEncodeWithPubkey(uint32_t *data, int lenWords)
 {
     uint32_t sum = 0;
     uint32_t y = 0;
@@ -44,24 +43,23 @@ void adslXxteaEncode(uint32_t *data, int lenBytes, const uint32_t key[4])
     for (int i = 0; i < 6; i++) {
     	sum += 0x9e3779b9;
       uint32_t e = (sum >> 2) & 3;
-      for (int p = 0; p <= 4; p++) {
+      for (int p = 0; p <= lenWords - 1; p++) {
       	y = p == 4 ? data[0] : data[p + 1];
-        z = data[p] += (((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + (key[(p & 3) ^ e] ^ z)));
+        z = data[p] += (((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + z));
       }
     }
 }
 
-void adslXxteaDecode(uint32_t *data, int lenBytes, const uint32_t key[4])
+void adslXxteaDecodeWithPubkey(uint32_t *data, int lenWords)
 {
   uint32_t sum = 0xb54cda56;
   uint32_t y = data[0];
   uint32_t z = 0;
-
   for (int i = 0; i < 6; i++) {
     uint32_t e = (sum >> 2) & 3;
-    for (int p = 4; p >= 0; p--) {
+    for (int p = lenWords - 1; p >= 0; p--) {
       z = data[(p + 4) % 5];
-      y = data[p] -= (((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + (key[(p & 3) ^ e] ^ z)));
+      y = data[p] -= (((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + z));
     }
     sum -= 0x9e3779b9;
   }

@@ -35,6 +35,8 @@
 #include <iostream>
 #include <iomanip>
 
+#include "ads_l_xxtea.h"
+
 #include "create_ads_l_packet.h"
 #include "ads_l_encode_iconspicuity.h"
 
@@ -42,6 +44,8 @@
 #include "decode_ads_l_packet.h"
 
 int gNofFailedAssertions;
+
+static void testXxteaCompatibility();
 
 static void testIConspicuityCompatibility();
 
@@ -65,6 +69,8 @@ int main(int argc, char *argv[])
 {
 	std::cout << "libadsl-test" << std::endl;
 
+	testXxteaCompatibility();
+
 	testIConspicuityCompatibility();
 
 	testIConspicuity();
@@ -72,6 +78,49 @@ int main(int argc, char *argv[])
 
 	showTestResult();
 	return 0;
+}
+
+static void testXxteaCompatibility()
+{
+	uint32_t data[] = {
+		0xc2e38f4b,
+		0x008bc012,
+		0xb9aa56ad,
+		0x10ba7119,
+		0x7d9c9a8e
+	};
+
+	// Decode
+
+	adslXxteaDecodeWithPubkey(data, 5);
+
+	uint32_t dataExpected1[] = {
+		0x5675c802,
+		0x85071004,
+		0x06764354,
+		0x03b40006,
+		0x5e005900
+	};
+
+	for (int i = 0; i < 5; i++ ) {
+		assertValue("xxtea data decode", (int)dataExpected1[i], (int)data[i]);
+	}
+
+	// Encode
+
+	adslXxteaEncodeWithPubkey(data, 5);
+
+	uint32_t dataExpected2[] = {
+		0xc2e38f4b,
+		0x008bc012,
+		0xb9aa56ad,
+		0x10ba7119,
+		0x7d9c9a8e
+	};
+
+	for (int i = 0; i < 5; i++ ) {
+		assertValue("xxtea data encode", (int)dataExpected2[i], (int)data[i]);
+	}
 }
 
 static void testIConspicuityCompatibility()
