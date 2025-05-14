@@ -1,0 +1,6 @@
+test set                    = grenchen_20250408_1
+selected aircraft           = 19F
+   1468;1CB;2;L2 h=11° d=3172m dt=29s;8
+   1469;1CB;2;L2 h=12° d=3081m dt=29s;8
+   1470;68D;2;L2 h=12° d=2991m dt=28s;8
+   1471;1CB;2;L2 h=12° d=2900m dt=27s;8

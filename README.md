@@ -106,10 +106,39 @@ code and see how the above functions are used.
 
 ## Simulation environment
 
-TODO
+Part of this project is a simulation environment.
+
+During the development phase of the algorithm, the simulation environment was used to check and optimize the algorithm. For further development, regression tests can be carried out using the recorded test cases.
+
+The simulation environment is started with a test case file (.tst) as input. This file describes a single test case consisting of a set of flight objects. For each flight object, a flight path file (.flp) is referenced from the test case, which describes the exact position of the flight object at every second. The "Flight path importer" utility program (see description below) is used to create flight path files.
+
+### Compiling the simulation environment
+
+The source code of the simulation environment is provided in the src/sim directory. First, compile the libadsl and libocap libraries by invoking the make command in the corresponding directories. Afterwards, you can compile the simulator by invoking make in the src/sim directory. The result is the sim binary.
+
+### Starting the simulation environment
+
+It is possible to run the simulation environment in an online session with a GUI or from the command line for automated testing.
+
+To start an online session, invoke the sim binary with a test case file as input, for example:
+
+$ ./src/sim/sim testflights/20250408_grenchen/test_grenchen1.tst
+
+This will start the simulation environment and load the specified test case, including the flight pathes of all aircraft defined in the test case.
+
+### Using the simulation environment
+
+The GUI of the simulation environment consists of 3 windows.
+
+The main window is a 3-d representation of the simulated world. At the top left, you see the loaded test case and the time offset into the simulation, in seconds. All loaded aircraft appear in the view, annotated with their name. If the window has the focus, you can use the cursor keys to rotate (or move, if the shift key is pressed) the view, and the + and - keys to zoom in or out. 
+
+The simulation time window below the main window lets you set the simulation time with the slider control. Drag the slider buttons with the mouse to set the start and end of the displayed flight path for each aircraft in the main window. After selecting a "main" aircraft in the object window, you can press the "space" key to start and stop the collision detection calculation. Use the right arrow cursor to advance the time by 0.1 (or 1.0 with shift pressed) seconds.
+
+The object window at the right side of the screen contains a list of loaded aircraft. Each list entry contains the identifier of the aircraft as well as the ground speed, bearing and vertical speed, on the first line. If the collision prediction is running, the second line contains the distance to the main aircraft, in meters, at the current point in time, and the third line contains information about a potential collision warning alarm message caused by the corresponding aircraft. Alarm messages range from level 1 (lowest) to 3 (most critical). 
 
 ## Support tools
 
-TODO
+### Flight path importer
 
+The Flight Path Importer is used to create flight path files (.flp) based on recorded IGC files. The tool performs spline interpolation to obtain smoothed positions at every second.
 
