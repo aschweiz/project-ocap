@@ -35,6 +35,7 @@
 #include <iostream>
 #include <iomanip>
 
+#include "ads_l_crc.h"
 #include "ads_l_xxtea.h"
 
 #include "create_ads_l_packet.h"
@@ -45,8 +46,8 @@
 
 int gNofFailedAssertions;
 
+static void testCrcCompatibility();
 static void testXxteaCompatibility();
-
 static void testIConspicuityCompatibility();
 
 static void testIConspicuity();
@@ -69,8 +70,8 @@ int main(int argc, char *argv[])
 {
 	std::cout << "libadsl-test" << std::endl;
 
+	testCrcCompatibility();
 	testXxteaCompatibility();
-
 	testIConspicuityCompatibility();
 
 	testIConspicuity();
@@ -78,6 +79,25 @@ int main(int argc, char *argv[])
 
 	showTestResult();
 	return 0;
+}
+
+static void testCrcCompatibility()
+{
+	// Test decoding and re-encoding a recorded packet from a Skytraxx device.
+	uint8_t dataIn25[25] = {
+		// No crc over packet length:
+		0x18,
+		// Crc over remaining data:
+		0x00, 0x4b, 0x8f, 0xe3, 0xc2, 0x12, 0xc0,
+		0x8b, 0x00, 0xad, 0x56, 0xaa, 0xb9, 0x19, 0x71,
+		0xba, 0x10, 0x8e, 0x9a, 0x9c, 0x7d,
+		// Recorded crc:
+		0xc6, 0xf1, 0x25
+	};
+
+	uint32_t crc = adslCrc(&dataIn25[1], 21);
+
+	assertValue("crc", (int)0x00c6f125, (int)(crc & 0x00ffffff));
 }
 
 static void testXxteaCompatibility()

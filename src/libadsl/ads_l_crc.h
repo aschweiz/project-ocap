@@ -37,8 +37,8 @@
 #include <inttypes.h>
 
 // The CRC is calculated over the provided data bytes,
-// typically 21 or 25 bytes (version+flags:1, data:20 or 24).
-// Take the lower 24 bits of the result.
+// typically 21 bytes (version+flags:1, data:20).
+// Take the lower 24 bits of the result AND APPEND AS BIG-ENDIAN!
 uint32_t adslCrc(const uint8_t *data, int len);
 
 #endif // __ADS_L_CRC_H__
