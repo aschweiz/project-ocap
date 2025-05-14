@@ -135,7 +135,7 @@ void FlightPathConfig::AddPacket(const char *packetLine)
     // XXTEA decode; 5 x 32-bit, even with iConspicuity2.
     printf("XXTEA-decoding replay packet: ");
     printPacketData(packet.data, packetLength);
-    adslXxteaDecode((uint32_t*)&packet.data[2], 5, adslXxteaPublicKey);
+    adslXxteaDecodeWithPubkey((uint32_t*)&packet.data[2], 5);
     printf(" --> ");
     printPacketData(packet.data, packetLength);
     printf("\n");
