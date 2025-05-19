@@ -110,10 +110,11 @@ Workspace::~Workspace()
     sOtherFlightPathIdNr = nullptr;
 }
 
-void Workspace::Initialize(std::string pathToTestSet, bool isAutoRun, bool isRealTime)
+void Workspace::Initialize(std::string pathToTestSet, bool isAutoRun, bool isRealTime, std::string resultFile)
 {
     this->isAutoRun = isAutoRun;
     this->isRealTime = isRealTime;
+    collisionResultFileName = resultFile;
 
     // Load simulation data.
     testSet = new TestSet();
@@ -192,7 +193,7 @@ void Workspace::StartCollisionWarning()
 
     // Create the result file.
 
-    collisionResultFile = fopen("prediction_result.txt", "w");
+    collisionResultFile = fopen(collisionResultFileName.c_str(), "w");
     fprintf(collisionResultFile, "test set                    = %s\n", testSet->GetName().c_str());
     FlightPathConfig *fpcSelected = testSet->GetSelectedFlightPath();
     fprintf(collisionResultFile, "selected aircraft           = %s\n",

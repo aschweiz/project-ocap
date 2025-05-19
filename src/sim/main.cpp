@@ -57,17 +57,22 @@ int main(int argc, char *argv[])
     // Create the workspace.
     int isAutoRun = !strcmp(argv[1], "--autorun");
     int isAutoRunRealTime = !strcmp(argv[1], "--autorun-realtime");
+    std::string outputFileName = "prediction_result.txt";
     if (isAutoRun || isAutoRunRealTime) {
         if (argc < 3) {
             printUsageAndExit(argv[0]);
         }
         fileNameIx++;
+        if (argc >= 4) {
+          outputFileName = argv[3];
+        }
     }
 
     Workspace::Instance()->Initialize(
         argv[fileNameIx],
         isAutoRun || isAutoRunRealTime,
-        isAutoRunRealTime);
+        isAutoRunRealTime,
+        outputFileName);
 
     glutMainLoop();
     return 0;
@@ -75,6 +80,9 @@ int main(int argc, char *argv[])
 
 void printUsageAndExit(const char *appName)
 {
-    fprintf(stderr, "usage: %s [--autorun] <.tst>\n", appName);
+    fprintf(stderr, "usage: %s [--autorun] <.tst> [<.txt>]\n", appName);
+    fprintf(stderr, "Runs the OCAP simulation environment.\n");
+    fprintf(stderr, "Use autorun to execute a test case and exit afterwards.\n");
+    fprintf(stderr, "Optionally specify a target file name for the result file.\n");
     exit(-1);
 }

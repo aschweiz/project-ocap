@@ -49,7 +49,7 @@ private:
 public:
     ~Workspace();
 
-    void Initialize(std::string pathToTestSet, bool isAutoRun, bool isRealTime);
+    void Initialize(std::string pathToTestSet, bool isAutoRun, bool isRealTime, std::string resultFile);
 
     void PostRedisplayAll();
 
@@ -79,7 +79,8 @@ private:
 
     bool collisionWarningRunning = false;
     long collisionWarningLastTimeMs = 0;
-
+    
+    std::string collisionResultFileName;
     FILE *collisionResultFile = nullptr;
 };
 

@@ -1,0 +1,15 @@
+Testfälle Grenchen 14.05.2025
+-----------------------------
+
+Testfall  Zeitraum     Beschreibung
+--------  ---------    ------------------------------------------
+   1      1184-1381    Gerade aufeinander zu, Fall 1
+   2      1381-1526    Gerade aufeinander zu, Fall 2
+   3      1526-1642    Gerade aufeinander zu, Fall 3
+   4      1642-1851    Aufholen von hinten, Fall 1
+   5      1851-2062    Aufholen von hinten, Fall 2
+   6      2062-2284    Aufholen von hinten, Fall 3
+   7      2284-2555    Aufholen von hinten, Fall 4
+   8      2555-2822    Aufholen von hinten, Fall 5
+   9      2822-3040    Aufholen von hinten, Fall 6   
+
