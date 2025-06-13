@@ -1,0 +1,20 @@
+Test set MSW Aviation, Birrfeld, 23.05.2025
+---------------------------------------------
+
+Test case  Time         Description
+---------  ---------    -----------------------------------------------------------------------
+   1        470- 570    Flying towards each other from behind (rear-end collision), 1 of 4
+   2        573- 673    Flying towards each other from behind (rear-end collision), 2 of 4
+   3        680- 802    Flying towards each other from behind (rear-end collision), 3 of 4
+   4        803- 985    Flying towards each other from behind (rear-end collision), 4 of 4
+   5       1000-1040    Fly towards each other at right angles and cross, 1 of 2
+   6       1050-1080    Fly towards each other at right angles and cross, 2 of 2
+   7       1239-1293    Looping and approach when coming down, 1 of 2
+   8       1296-1332    Looping and approach when coming down, 2 of 2
+   9       1337-1392    Laterally offset flight
+  10       1416-1460    Pursuit without approaching the front aircraft
+  11       1624-1684    Arc with collision course, 1 of 4
+  12       1690-1725    Arc with collision course, 2 of 4
+  13       1755-1815    Arc with collision course, 3 of 4
+  14       1820-1870    Arc with collision course, 4 of 4
+

@@ -1,0 +1,27 @@
+test set                    = birrfeld_20250523_7
+selected aircraft           = yla
+   1242;ymv;3;L3 h=137° d=132m dt=0s;12
+   1248;ymv;2;L1 h=176° d=511m dt=0s;7
+   1249;ymv;2;L2 h=166° d=501m dt=0s;8
+   1252;ymv;2;L2 h=3° d=539m dt=0s;8
+   1253;ymv;2;L2 h=-1° d=506m dt=0s;8
+   1254;ymv;2;L2 h=0° d=473m dt=0s;8
+   1255;ymv;3;L3 h=0° d=454m dt=5s;12
+   1256;ymv;3;L3 h=1° d=429m dt=4s;12
+   1257;ymv;3;L3 h=2° d=396m dt=2s;12
+   1258;ymv;3;L3 h=4° d=365m dt=1s;12
+   1259;ymv;3;L3 h=5° d=336m dt=0s;12
+   1260;ymv;3;L3 h=8° d=309m dt=0s;12
+   1261;ymv;3;L3 h=12° d=280m dt=0s;12
+   1262;ymv;3;L3 h=17° d=254m dt=0s;12
+   1263;ymv;3;L3 h=21° d=228m dt=0s;12
+   1264;ymv;3;L3 h=29° d=207m dt=0s;12
+   1265;ymv;3;L3 h=41° d=193m dt=0s;12
+   1266;ymv;3;L3 h=51° d=184m dt=0s;12
+   1267;ymv;3;L3 h=56° d=175m dt=0s;12
+   1268;ymv;3;L3 h=62° d=173m dt=0s;12
+   1272;ymv;3;L3 h=78° d=177m dt=0s;12
+   1273;ymv;3;L3 h=80° d=173m dt=0s;12
+   1274;ymv;3;L3 h=85° d=168m dt=0s;12
+   1277;ymv;3;L3 h=99° d=165m dt=0s;12
+   1278;ymv;3;L3 h=106° d=164m dt=0s;12

@@ -1,0 +1,4 @@
+test set                    = birrfeld_20250523_10
+selected aircraft           = yla
+   1419;ymv;1;L1 h=-12° d=1353m dt=0s;4
+   1445;ymv;1;L1 h=4° d=1437m dt=0s;4
