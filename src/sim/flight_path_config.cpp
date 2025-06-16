@@ -261,35 +261,56 @@ void FlightPathConfig::YieldSimulationPrediction(long ms)
     int nofAlarmStates = alarmStateListGetCount();
 
     // Provide the most critical alarm (at the head of the list) to the alarm service.
-    TAlarmState *a = NULL;
+    TAlarmState *theA = NULL;
     if (nofAlarmStates > 0) {
-        a = alarmStateListGetAtIndex(0);
+        theA = alarmStateListGetAtIndex(0);
     }
 
     // Prepare detailed information about the alarm state.
-    char buf[ALARM_STATE_INFO_BUF_SIZE];
-    buf[0] = 0;
-    int distMtr = -1;
-    if (a) {
-        TFlightObjectOther *fOther = a->flightObject;
-        TFlightObjectOrientation fo;
-        int hasOrientation = flightObjectOrientationCalculate(
-            &fo, &a->curDistanceToFlightObject, &fOwn->rxVel);
+    char buf[ALARM_STATE_INFO_BUF_SIZE] = { 0 };
+
+	// Calculate the distance and orientation to the "offending" aircraft.
+	TFlightObjectOrientation fo;
+	int hasOrientation = 0;
+    TVector vectorToOtherMemory, *vectorToOther = &vectorToOtherMemory;
+	int distMtr = -1;
+    TFlightObjectOther *fOther = NULL;
+    if (theA) {
+		// If an alarm state is available, we can directly use the dist vector.
+		fOther = theA->flightObject;
+		vectorToOther = &theA->curDistanceToFlightObject;
+    } else {
+		// No alarm state, so calculate the dist vector based on previous aircraft.
+		TAlarmServiceEntry *eOld = alarmServiceGetMostCritical();
+		if (eOld && eOld->flightObject) {
+			fOther = eOld->flightObject;
+			vectorCopy(vectorToOther, &fOther->rxPos);
+			vectorSubtractVector(vectorToOther, &fOwn->rxPos);
+		}
+    }
+	// Calculate the distance based on the vector to the other aircraft.
+	if (vectorToOther) {
+		hasOrientation = flightObjectOrientationCalculate(
+				&fo, vectorToOther, &fOwn->rxVel);
+		distMtr = hasOrientation ? fo.distanceMeters : -1;
+	}
+
+    // Print alarm information.
+    if (theA) {
         if (hasOrientation) {
             snprintf(buf, ALARM_STATE_INFO_BUF_SIZE, "L%d h=%d° d=%dm dt=%ds",
-							a->level, fo.directionDeg, fo.distanceMeters, a->timeToEncounterSec);
+                theA->level, fo.directionDeg, fo.distanceMeters, theA->timeToEncounterSec);
         } else {
             snprintf(buf, ALARM_STATE_INFO_BUF_SIZE, "L%d h=N/A d=%dm dt=%ds",
-							a->level, fo.distanceMeters, a->timeToEncounterSec);
+                theA->level, fo.distanceMeters, theA->timeToEncounterSec);
         }
         printf("ALARM: %06x  %s\n", fOther->id, buf);
-        distMtr = fo.distanceMeters;
     }
 
 #ifdef USE_ALARM_SERVICE
     // Reflect the alarm level on the flight path.
     // An alarm service entry may exist even if there was no alarm state in this round.
-    alarmServiceUpdateMostCritical(a, distMtr);
+    alarmServiceUpdateMostCritical(theA, distMtr);
     TAlarmServiceEntry *e = alarmServiceGetMostCritical();
     if (e && e->alarmState) {
         FlightPathConfig *fpcOther = Workspace::Instance()->GetFlightPathByIdNr(
@@ -301,11 +322,11 @@ void FlightPathConfig::YieldSimulationPrediction(long ms)
         }
     }
 #else
-    if (a) {
-        FlightPathConfig *fpcOther = Workspace::Instance()->GetFlightPathByIdNr(a->flightObject->id);
+    if (theA) {
+        FlightPathConfig *fpcOther = Workspace::Instance()->GetFlightPathByIdNr(theA->flightObject->id);
         fpcOther->alarmMessage = buf;
-        fpcOther->alarmLevel = a->level;
-        fpcOther->alarmIntensity = (int)a->level;
+        fpcOther->alarmLevel = theA->level;
+        fpcOther->alarmIntensity = (int)theA->level;
     }
 #endif
 }

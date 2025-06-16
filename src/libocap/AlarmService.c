@@ -30,8 +30,8 @@
 // DAMAGE.
 //
 
-#include "OcapLog.h"
 #include "AlarmService.h"
+#include "OcapLog.h"
 
 #define FAR_AWAY_METERS 1000000
 #define ALARM_SERVICE_FACTOR 4
@@ -41,9 +41,7 @@
 // the most critical one to the client.
 static TAlarmServiceEntry sEntry;
 
-
 static void alarmServiceUpdate(TAlarmServiceEntry *e, int targetLevel, int distMtr);
-
 
 void alarmServiceUpdateMostCritical(TAlarmState *a, int distMtr)
 {
@@ -55,7 +53,8 @@ void alarmServiceUpdateMostCritical(TAlarmState *a, int distMtr)
 	// Convert alarm state levels (1 to 3) to our range (1 to 3*ALARM_SERVICE_FACTOR).
 	int targetLevel = (int)a->level * ALARM_SERVICE_FACTOR;
 	// On switching aircraft, boost to highest level right away, but decay slowly.
-	if (sEntry.alarmState != a) {
+	if (a->flightObject && a->flightObject != sEntry.flightObject) {
+		sEntry.flightObject = a->flightObject;
 		sEntry.alarmState = a;
 		sEntry.distMtr = FAR_AWAY_METERS;
 		sEntry.approaching = 1;
@@ -84,7 +83,6 @@ EAlarmLevel alarmServiceGetLevel(TAlarmServiceEntry *e)
 	return (EAlarmLevel)((e->level + ALARM_SERVICE_FACTOR - 1) / ALARM_SERVICE_FACTOR);
 }
 
-
 static void alarmServiceUpdate(
 	TAlarmServiceEntry *e, int targetLevel, int distMtr)
 {
@@ -112,7 +110,7 @@ static void alarmServiceUpdate(
 	}
 	// Drop after complete decay.
 	if (e->level <= 0) {
-		e->alarmState = NULL;
+		e->flightObject = 0L;
 		e->level = 0;
 	}
 }

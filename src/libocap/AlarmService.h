@@ -37,6 +37,7 @@
 
 typedef struct {
 	TAlarmState *alarmState;
+	TFlightObjectOther *flightObject;
 	int level;
 	int distMtr;
 	int approaching;
