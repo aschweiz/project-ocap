@@ -8,7 +8,7 @@ selected aircraft           = yla
    1779;ymv;1;;3
    1780;ymv;1;L1 h=59° d=3602m dt=16s;4
    1781;ymv;3;L3 h=55° d=3468m dt=21s;12
-   1782;ymv;3;L2 h=53° d=3331m dt=16s;11
+   1782;ymv;3;L3 h=53° d=3331m dt=16s;11
    1783;ymv;3;L3 h=50° d=3193m dt=19s;12
    1784;ymv;3;L3 h=48° d=3051m dt=18s;12
    1785;ymv;3;L3 h=46° d=2906m dt=17s;12
@@ -27,6 +27,11 @@ selected aircraft           = yla
    1798;ymv;3;L3 h=-9° d=860m dt=3s;12
    1799;ymv;3;L3 h=-15° d=698m dt=2s;12
    1800;ymv;3;L3 h=-21° d=540m dt=1s;12
-   1801;ymv;3;L3 h=-29° d=382m dt=0s;12
-   1802;ymv;3;L3 h=-48° d=243m dt=0s;12
-   1803;ymv;3;L3 h=-95° d=163m dt=0s;12
+   1801;ymv;3;;10
+   1802;ymv;2;;8
+   1803;ymv;2;;6
+   1804;ymv;1;;4
+   1805;ymv;1;;3
+   1806;ymv;1;;2
+   1807;ymv;1;;1
+   1815;ymv;1;L1 h=150° d=1887m dt=29s;4

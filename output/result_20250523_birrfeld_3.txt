@@ -1,6 +1,6 @@
 test set                    = birrfeld_20250523_3
 selected aircraft           = yla
-    683;ymv;3;L3 h=152° d=304m dt=0s;12
+    696;ymv;1;L1 h=104° d=1567m dt=11s;4
     705;ymv;1;L1 h=-4° d=1520m dt=6s;4
     706;ymv;1;L1 h=-4° d=1500m dt=5s;4
     707;ymv;1;L1 h=-4° d=1478m dt=5s;4
@@ -8,52 +8,52 @@ selected aircraft           = yla
     709;ymv;2;L2 h=-1° d=1431m dt=24s;8
     710;ymv;2;L2 h=-1° d=1407m dt=22s;8
     711;ymv;2;L2 h=-2° d=1382m dt=29s;8
-    712;ymv;2;L1 h=-3° d=1359m dt=0s;7
+    712;ymv;2;;6
     713;ymv;2;L2 h=-3° d=1337m dt=27s;8
     714;ymv;2;L2 h=-1° d=1310m dt=22s;8
     715;ymv;2;L2 h=-1° d=1286m dt=18s;8
     716;ymv;3;L3 h=0° d=1261m dt=26s;12
-    717;ymv;3;L2 h=0° d=1236m dt=18s;11
-    718;ymv;3;L2 h=0° d=1210m dt=14s;10
-    719;ymv;3;L2 h=2° d=1184m dt=14s;9
+    717;ymv;3;L3 h=0° d=1236m dt=18s;11
+    718;ymv;3;L3 h=0° d=1210m dt=14s;10
+    719;ymv;3;L3 h=2° d=1184m dt=14s;9
     720;ymv;2;L2 h=2° d=1159m dt=15s;8
     721;ymv;3;L3 h=4° d=1132m dt=24s;12
-    722;ymv;3;L2 h=4° d=1108m dt=16s;11
-    723;ymv;3;L2 h=5° d=1082m dt=13s;10
-    724;ymv;3;L2 h=5° d=1056m dt=11s;9
+    722;ymv;3;L3 h=4° d=1108m dt=16s;11
+    723;ymv;3;L3 h=5° d=1082m dt=13s;10
+    724;ymv;3;L3 h=5° d=1056m dt=11s;9
     725;ymv;2;L2 h=6° d=1031m dt=11s;8
     726;ymv;3;L3 h=6° d=1007m dt=24s;12
     727;ymv;3;L3 h=5° d=984m dt=20s;12
     728;ymv;3;L3 h=5° d=962m dt=21s;12
     729;ymv;3;L3 h=5° d=944m dt=28s;12
-    730;ymv;3;L2 h=5° d=923m dt=8s;11
-    731;ymv;3;L2 h=5° d=905m dt=8s;10
-    732;ymv;3;L2 h=5° d=887m dt=7s;9
+    730;ymv;3;L3 h=5° d=923m dt=8s;11
+    731;ymv;3;L3 h=5° d=905m dt=8s;10
+    732;ymv;3;L3 h=5° d=887m dt=7s;9
     733;ymv;2;L2 h=5° d=871m dt=7s;8
     734;ymv;3;L3 h=5° d=855m dt=23s;12
-    735;ymv;3;L2 h=5° d=835m dt=6s;11
+    735;ymv;3;L3 h=5° d=835m dt=6s;11
     736;ymv;3;L3 h=4° d=823m dt=21s;12
-    737;ymv;3;L2 h=5° d=807m dt=5s;11
+    737;ymv;3;L3 h=5° d=807m dt=5s;11
     738;ymv;3;L3 h=4° d=796m dt=21s;12
     739;ymv;3;L3 h=4° d=783m dt=24s;12
     740;ymv;3;L3 h=4° d=774m dt=24s;12
-    741;ymv;3;L2 h=3° d=765m dt=4s;11
-    742;ymv;3;L2 h=3° d=754m dt=3s;10
-    743;ymv;3;L2 h=4° d=745m dt=2s;9
+    741;ymv;3;L3 h=3° d=765m dt=4s;11
+    742;ymv;3;L3 h=3° d=754m dt=3s;10
+    743;ymv;3;L3 h=4° d=745m dt=2s;9
     744;ymv;2;L2 h=4° d=735m dt=2s;8
     745;ymv;2;L2 h=3° d=726m dt=1s;8
-    746;ymv;2;L2 h=3° d=716m dt=0s;8
-    747;ymv;2;L2 h=3° d=705m dt=0s;8
+    746;ymv;2;;6
+    747;ymv;1;;4
     748;ymv;3;L3 h=3° d=692m dt=24s;12
     749;ymv;3;L3 h=3° d=685m dt=20s;12
-    750;ymv;3;L2 h=4° d=672m dt=0s;11
+    750;ymv;3;;10
     751;ymv;3;L3 h=4° d=662m dt=21s;12
-    752;ymv;3;L2 h=4° d=653m dt=0s;11
-    753;ymv;3;L2 h=4° d=645m dt=0s;10
+    752;ymv;3;;10
+    753;ymv;2;;8
     754;ymv;3;L3 h=4° d=635m dt=22s;12
-    755;ymv;3;L2 h=4° d=625m dt=0s;11
+    755;ymv;3;;10
     756;ymv;3;L3 h=4° d=615m dt=17s;12
-    757;ymv;3;L2 h=4° d=606m dt=0s;11
+    757;ymv;3;;10
     758;ymv;3;L3 h=4° d=595m dt=16s;12
     759;ymv;3;L3 h=4° d=586m dt=15s;12
     760;ymv;3;L3 h=4° d=576m dt=18s;12
@@ -78,11 +78,10 @@ selected aircraft           = yla
     779;ymv;3;L3 h=5° d=375m dt=2s;12
     780;ymv;3;L3 h=6° d=356m dt=1s;12
     781;ymv;3;L3 h=6° d=339m dt=1s;12
-    782;ymv;3;L3 h=5° d=323m dt=0s;12
-    783;ymv;3;L3 h=4° d=304m dt=0s;12
-    784;ymv;3;L3 h=2° d=283m dt=0s;12
-    785;ymv;3;L3 h=4° d=265m dt=0s;12
-    786;ymv;3;L3 h=10° d=252m dt=0s;12
-    787;ymv;3;L3 h=16° d=241m dt=0s;12
-    788;ymv;3;L3 h=22° d=234m dt=0s;12
-    789;ymv;3;L3 h=34° d=230m dt=0s;12
+    782;ymv;3;;10
+    783;ymv;2;;8
+    784;ymv;2;;6
+    785;ymv;1;;4
+    786;ymv;1;;3
+    787;ymv;1;;2
+    788;ymv;1;;1

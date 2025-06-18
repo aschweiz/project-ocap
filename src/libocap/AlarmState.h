@@ -46,10 +46,10 @@ typedef enum {
 } EAlarmLevel;
 
 typedef struct {
-	EAlarmLevel level;
-	int timeToEncounterSec;
 	TFlightObjectOther *flightObject;
 	TVector curDistanceToFlightObject;
+	int timeToEncounterSec;
+	EAlarmLevel level;
 } TAlarmState;
 
 #endif // __ALARM_STATE_H__

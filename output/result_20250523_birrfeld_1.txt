@@ -1,8 +1,10 @@
 test set                    = birrfeld_20250523_1
 selected aircraft           = yla
     473;ymv;3;L3 h=142° d=386m dt=1s;12
+    486;ymv;3;L3 h=136° d=457m dt=16s;12
     487;ymv;3;L3 h=134° d=456m dt=14s;12
-    489;ymv;3;L2 h=132° d=456m dt=0s;10
+    488;ymv;3;;10
+    489;ymv;2;;8
     490;ymv;3;L3 h=132° d=452m dt=12s;12
     491;ymv;3;L3 h=132° d=450m dt=17s;12
     492;ymv;3;L3 h=130° d=438m dt=9s;12
@@ -12,40 +14,16 @@ selected aircraft           = yla
     496;ymv;3;L3 h=131° d=409m dt=8s;12
     497;ymv;3;L3 h=132° d=402m dt=10s;12
     498;ymv;3;L3 h=133° d=391m dt=7s;12
-    499;ymv;3;L2 h=133° d=381m dt=0s;11
+    499;ymv;3;;10
     500;ymv;3;L3 h=133° d=368m dt=4s;12
     501;ymv;3;L3 h=133° d=358m dt=5s;12
     502;ymv;3;L3 h=134° d=345m dt=3s;12
     503;ymv;3;L3 h=134° d=335m dt=2s;12
     504;ymv;3;L3 h=134° d=322m dt=1s;12
-    505;ymv;3;L3 h=135° d=311m dt=0s;12
-    506;ymv;3;L3 h=134° d=299m dt=0s;12
-    507;ymv;3;L3 h=133° d=286m dt=0s;12
-    508;ymv;3;L3 h=134° d=276m dt=0s;12
-    509;ymv;3;L3 h=133° d=263m dt=0s;12
-    510;ymv;3;L3 h=132° d=249m dt=0s;12
-    511;ymv;3;L3 h=133° d=237m dt=0s;12
-    512;ymv;3;L3 h=131° d=225m dt=0s;12
-    513;ymv;3;L3 h=131° d=212m dt=0s;12
-    514;ymv;3;L3 h=131° d=197m dt=0s;12
-    515;ymv;3;L3 h=131° d=186m dt=0s;12
-    516;ymv;3;L3 h=131° d=171m dt=0s;12
-    517;ymv;3;L3 h=131° d=158m dt=0s;12
-    518;ymv;3;L3 h=130° d=147m dt=0s;12
-    519;ymv;3;L3 h=131° d=133m dt=0s;12
-    520;ymv;3;L3 h=129° d=119m dt=0s;12
-    521;ymv;3;L3 h=129° d=108m dt=0s;12
-    522;ymv;3;L3 h=127° d=100m dt=0s;12
-    523;ymv;3;L3 h=125° d=94m dt=0s;12
-    524;ymv;3;L3 h=122° d=93m dt=0s;12
-    525;ymv;3;L3 h=121° d=88m dt=0s;12
-    526;ymv;3;L3 h=119° d=87m dt=0s;12
-    527;ymv;3;L3 h=117° d=84m dt=0s;12
-    530;ymv;3;L3 h=115° d=84m dt=0s;12
-    532;ymv;3;L3 h=115° d=84m dt=0s;12
-    536;ymv;3;L3 h=116° d=86m dt=0s;12
-    542;ymv;3;L3 h=119° d=93m dt=0s;12
-    546;ymv;3;L3 h=122° d=101m dt=0s;12
-    560;ymv;3;L3 h=130° d=139m dt=0s;12
-    567;ymv;3;L3 h=134° d=147m dt=0s;12
-    568;ymv;3;L3 h=134° d=145m dt=0s;12
+    505;ymv;3;;10
+    506;ymv;2;;8
+    507;ymv;2;;6
+    508;ymv;1;;4
+    509;ymv;1;;3
+    510;ymv;1;;2
+    511;ymv;1;;1

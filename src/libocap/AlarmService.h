@@ -36,10 +36,10 @@
 #include "AlarmState.h"
 
 typedef struct {
-	TAlarmState *alarmState;
 	TFlightObjectOther *flightObject;
 	int level;
 	int distMtr;
+	int timeToEncounterSec;
 	int approaching;
 } TAlarmServiceEntry;
 

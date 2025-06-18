@@ -131,6 +131,7 @@ public:
 
 private:
 	bool CalculatePosAndVel(long ms, linalg::Vector3d *posMtr, linalg::Vector3d *velMtrSec);
+	void UpdateAlarmInformation();
 
 private:
 	FlightPath *flightPath = nullptr;

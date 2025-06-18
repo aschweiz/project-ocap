@@ -30,10 +30,13 @@
 // DAMAGE.
 //
 
-#include "AlarmService.h"
 #include "OcapLog.h"
+#include "AlarmService.h"
 
 #define FAR_AWAY_METERS 1000000
+
+// We stretch the alarm level (low=1, high=3) internally by this factor
+// so that we can apply a fine-grained decay.
 #define ALARM_SERVICE_FACTOR 4
 
 // For the moment, we maintain only 1 entry, for the most critical alarm.
@@ -41,28 +44,29 @@
 // the most critical one to the client.
 static TAlarmServiceEntry sEntry;
 
-static void alarmServiceUpdate(TAlarmServiceEntry *e, int targetLevel, int distMtr);
+
+static void alarmServiceUpdateDataFields(
+	TAlarmServiceEntry *e, int targetLevel, int distMtr, int timeToEncounterSec);
+
 
 void alarmServiceUpdateMostCritical(TAlarmState *a, int distMtr)
 {
-	// No alarm state: Decay slowly to level 0.
+	// No alarm state: Decay slowly towards level 0.
 	if (!a) {
-		alarmServiceUpdate(&sEntry, 0, -1);
+		alarmServiceUpdateDataFields(&sEntry, 0, -1, -1);
 		return;
 	}
-	// Convert alarm state levels (1 to 3) to our range (1 to 3*ALARM_SERVICE_FACTOR).
+	// Convert alarm state levels (1 to 3) to our extended range.
 	int targetLevel = (int)a->level * ALARM_SERVICE_FACTOR;
-	// On switching aircraft, boost to highest level right away, but decay slowly.
+	int timeToEncounterSec = a->timeToEncounterSec;
 	if (a->flightObject && a->flightObject != sEntry.flightObject) {
+		// A new aircraft causes the alarm.
+		// Remember the aircraft.
 		sEntry.flightObject = a->flightObject;
-		sEntry.alarmState = a;
 		sEntry.distMtr = FAR_AWAY_METERS;
 		sEntry.approaching = 1;
-		alarmServiceUpdate(&sEntry, targetLevel, distMtr);
-		return;
 	}
-	// Previously known alarm state: Quickly increase, slowly decrease.
-	alarmServiceUpdate(&sEntry, targetLevel, distMtr);
+	alarmServiceUpdateDataFields(&sEntry, targetLevel, distMtr, timeToEncounterSec);
 }
 
 TAlarmServiceEntry *alarmServiceGetMostCritical(void)
@@ -72,7 +76,7 @@ TAlarmServiceEntry *alarmServiceGetMostCritical(void)
 
 EAlarmLevel alarmServiceGetLevel(TAlarmServiceEntry *e)
 {
-	if (!e || !e->alarmState || e->level <= 0) {
+	if (!e || e->level <= 0) {
 		return ALARM_LEVEL_NONE;
 	}
 	// No alarm if the distance between us and the aircraft is increasing.
@@ -83,17 +87,17 @@ EAlarmLevel alarmServiceGetLevel(TAlarmServiceEntry *e)
 	return (EAlarmLevel)((e->level + ALARM_SERVICE_FACTOR - 1) / ALARM_SERVICE_FACTOR);
 }
 
-static void alarmServiceUpdate(
-	TAlarmServiceEntry *e, int targetLevel, int distMtr)
+
+static void alarmServiceUpdateDataFields(
+	TAlarmServiceEntry *e, int targetLevel, int distMtr, int timeToEncounterSec)
 {
+	// Update our alarm level.
 	int delta = targetLevel - e->level;
 	if (delta == 0) {
 		// NOP
-
 	} else if (delta > 0) {
 		// Immediately boost to higher target level.
 		e->level = targetLevel;
-
 	} else {
 		// Slowly decay towards the target level.
 		if (-delta > ALARM_SERVICE_FACTOR) {
@@ -108,9 +112,17 @@ static void alarmServiceUpdate(
 		e->approaching = (distMtr < e->distMtr) ? 1 : 0;
 		e->distMtr = distMtr;
 	}
+	// Update time to encounter, if available.
+	if (timeToEncounterSec >= 0) {
+		e->timeToEncounterSec = timeToEncounterSec;
+	} else if (e->approaching) {
+		// The aircraft is approaching and we don't have new information,
+		// so we count down to maintain continuity.
+		e->timeToEncounterSec--;
+	}
 	// Drop after complete decay.
 	if (e->level <= 0) {
-		e->flightObject = 0L;
 		e->level = 0;
+		e->flightObject = 0L;
 	}
 }
