@@ -1,12 +1,12 @@
 #
 # Project OCAP
-# Simulation Test Set
+# Simulation Test Case
 #
 
 # File format version
 2
 
-# Test name
+# Test case name
 birrfeld_20250523_13
 #  Arc with collision course, 3 of 4
 

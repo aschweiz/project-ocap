@@ -1,12 +1,12 @@
 #
 # Project OCAP
-# Simulation Test Set
+# Simulation Test Case
 #
 
 # File format version
 2
 
-# Test set name
+# Test case name
 birrfeld_20250523_full
 
 # Flight path directory

@@ -1,15 +1,15 @@
-Testfälle Grenchen 14.05.2025
------------------------------
+Test cases Grenchen 14.05.2025
+------------------------------
 
-Testfall  Zeitraum     Beschreibung
---------  ---------    ------------------------------------------
-   1      1184-1381    Gerade aufeinander zu, Fall 1
-   2      1381-1526    Gerade aufeinander zu, Fall 2
-   3      1526-1642    Gerade aufeinander zu, Fall 3
-   4      1642-1851    Aufholen von hinten, Fall 1
-   5      1851-2062    Aufholen von hinten, Fall 2
-   6      2062-2284    Aufholen von hinten, Fall 3
-   7      2284-2555    Aufholen von hinten, Fall 4
-   8      2555-2822    Aufholen von hinten, Fall 5
-   9      2822-3040    Aufholen von hinten, Fall 6   
+Test case  Time range   Description
+---------  ----------   ------------------------------------------
+   1       1184-1381    Frontal approach, 1 of 3
+   2       1381-1526    Frontal approach, 2 of 2
+   3       1526-1642    Frontal approach, 3 of 3
+   4       1642-1851    Approach from behind, 1 of 6
+   5       1851-2062    Approach from behind, 2 of 6
+   6       2062-2284    Approach from behind, 3 of 6
+   7       2284-2555    Approach from behind, 4 of 6
+   8       2555-2822    Approach from behind, 5 of 6
+   9       2822-3040    Approach from behind, 6 of 6
 

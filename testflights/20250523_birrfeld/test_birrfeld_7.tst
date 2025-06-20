@@ -1,12 +1,12 @@
 #
 # Project OCAP
-# Simulation Test Set
+# Simulation Test Case
 #
 
 # File format version
 2
 
-# Test name
+# Test case name
 birrfeld_20250523_7
 # Looping and approach when coming down, 1 of 2
 

@@ -1,12 +1,12 @@
 #
 # Project OCAP
-# Simulation Test Set
+# Simulation Test Case
 #
 
 # File format version
 2
 
-# Test name
+# Test case name
 birrfeld_20250523_5
 # Fly towards each other at right angles and cross, 1 of 2
 

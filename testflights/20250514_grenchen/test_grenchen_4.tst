@@ -1,12 +1,12 @@
 #
 # Project OCAP
-# Simulation Test Set
+# Simulation Test Case
 #
 
 # File format version
 2
 
-# Test set name
+# Test case name
 grenchen_20250514_4
 
 # Flight path directory
