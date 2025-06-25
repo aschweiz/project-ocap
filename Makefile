@@ -1,4 +1,4 @@
-all: birrfeld_20250523 grenchen_20250514 birrfeld_20250222 birrfeld_20250110
+all: birrfeld_20250523 grenchen_20250514 grenchen_20250408 birrfeld_20250222 birrfeld_20250110
 
 birrfeld_20250523:
 	./src/sim/sim --autorun testflights/20250523_birrfeld/test_birrfeld_1.tst output/result_20250523_birrfeld_1.txt
