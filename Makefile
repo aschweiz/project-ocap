@@ -1,4 +1,4 @@
-all: birrfeld_20250523 grenchen_20250514 birrfeld_20250110
+all: birrfeld_20250523 grenchen_20250514 birrfeld_20250222 birrfeld_20250110
 
 birrfeld_20250523:
 	./src/sim/sim --autorun testflights/20250523_birrfeld/test_birrfeld_1.tst output/result_20250523_birrfeld_1.txt
@@ -26,6 +26,14 @@ grenchen_20250514:
 	./src/sim/sim --autorun testflights/20250514_grenchen/test_grenchen_7.tst output/result_20250514_grenchen_7.txt
 	./src/sim/sim --autorun testflights/20250514_grenchen/test_grenchen_8.tst output/result_20250514_grenchen_8.txt
 	./src/sim/sim --autorun testflights/20250514_grenchen/test_grenchen_9.tst output/result_20250514_grenchen_9.txt
+
+birrfeld_20250222:
+	./src/sim/sim --autorun testflights/20250222_birrfeld/test_msw_20250222_1.tst output/result_20250222_birrfeld_1.txt
+	./src/sim/sim --autorun testflights/20250222_birrfeld/test_msw_20250222_2.tst output/result_20250222_birrfeld_2.txt
+	./src/sim/sim --autorun testflights/20250222_birrfeld/test_msw_20250222_3.tst output/result_20250222_birrfeld_3.txt
+	./src/sim/sim --autorun testflights/20250222_birrfeld/test_msw_20250222_4.tst output/result_20250222_birrfeld_4.txt
+	./src/sim/sim --autorun testflights/20250222_birrfeld/test_msw_20250222_5.tst output/result_20250222_birrfeld_5.txt
+	./src/sim/sim --autorun testflights/20250222_birrfeld/test_msw_20250222_6.tst output/result_20250222_birrfeld_6.txt
 
 birrfeld_20250110:
 	./src/sim/sim --autorun testflights/20250110_birrfeld/test_msw_20250110_1_1.tst output/result_20250110_birrfeld_1_1.txt
