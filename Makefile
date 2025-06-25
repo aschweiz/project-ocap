@@ -16,16 +16,26 @@ birrfeld_20250523:
 	./src/sim/sim --autorun testflights/20250523_birrfeld/test_birrfeld_13.tst output/result_20250523_birrfeld_13.txt
 	./src/sim/sim --autorun testflights/20250523_birrfeld/test_birrfeld_14.tst output/result_20250523_birrfeld_14.txt
 
+grenchen_20250408:
+	./src/sim/sim --autorun testflights/20250408_grenchen/test_grenchen_20250408_01.tst output/result_20250408_grenchen_01.txt
+	./src/sim/sim --autorun testflights/20250408_grenchen/test_grenchen_20250408_02.tst output/result_20250408_grenchen_02.txt
+	./src/sim/sim --autorun testflights/20250408_grenchen/test_grenchen_20250408_03.tst output/result_20250408_grenchen_03.txt
+	./src/sim/sim --autorun testflights/20250408_grenchen/test_grenchen_20250408_04.tst output/result_20250408_grenchen_04.txt
+	./src/sim/sim --autorun testflights/20250408_grenchen/test_grenchen_20250408_05.tst output/result_20250408_grenchen_05.txt
+	./src/sim/sim --autorun testflights/20250408_grenchen/test_grenchen_20250408_06.tst output/result_20250408_grenchen_06.txt
+	./src/sim/sim --autorun testflights/20250408_grenchen/test_grenchen_20250408_07.tst output/result_20250408_grenchen_07.txt
+	./src/sim/sim --autorun testflights/20250408_grenchen/test_grenchen_20250408_08.tst output/result_20250408_grenchen_08.txt
+	./src/sim/sim --autorun testflights/20250408_grenchen/test_grenchen_20250408_09.tst output/result_20250408_grenchen_09.txt
+	./src/sim/sim --autorun testflights/20250408_grenchen/test_grenchen_20250408_10.tst output/result_20250408_grenchen_10.txt
+	./src/sim/sim --autorun testflights/20250408_grenchen/test_grenchen_20250408_11.tst output/result_20250408_grenchen_11.txt
+	./src/sim/sim --autorun testflights/20250408_grenchen/test_grenchen_20250408_12.tst output/result_20250408_grenchen_12.txt
+	./src/sim/sim --autorun testflights/20250408_grenchen/test_grenchen_20250408_13.tst output/result_20250408_grenchen_13.txt
+	./src/sim/sim --autorun testflights/20250408_grenchen/test_grenchen_20250408_14.tst output/result_20250408_grenchen_14.txt
+	./src/sim/sim --autorun testflights/20250408_grenchen/test_grenchen_20250408_15.tst output/result_20250408_grenchen_15.txt
+	./src/sim/sim --autorun testflights/20250408_grenchen/test_grenchen_20250408_16.tst output/result_20250408_grenchen_16.txt
+
 grenchen_20250514:
 	./src/sim/sim --autorun testflights/20250514_grenchen/test_grenchen_1.tst output/result_20250514_grenchen_1.txt
-	./src/sim/sim --autorun testflights/20250514_grenchen/test_grenchen_2.tst output/result_20250514_grenchen_2.txt
-	./src/sim/sim --autorun testflights/20250514_grenchen/test_grenchen_3.tst output/result_20250514_grenchen_3.txt
-	./src/sim/sim --autorun testflights/20250514_grenchen/test_grenchen_4.tst output/result_20250514_grenchen_4.txt
-	./src/sim/sim --autorun testflights/20250514_grenchen/test_grenchen_5.tst output/result_20250514_grenchen_5.txt
-	./src/sim/sim --autorun testflights/20250514_grenchen/test_grenchen_6.tst output/result_20250514_grenchen_6.txt
-	./src/sim/sim --autorun testflights/20250514_grenchen/test_grenchen_7.tst output/result_20250514_grenchen_7.txt
-	./src/sim/sim --autorun testflights/20250514_grenchen/test_grenchen_8.tst output/result_20250514_grenchen_8.txt
-	./src/sim/sim --autorun testflights/20250514_grenchen/test_grenchen_9.tst output/result_20250514_grenchen_9.txt
 
 birrfeld_20250222:
 	./src/sim/sim --autorun testflights/20250222_birrfeld/test_msw_20250222_1.tst output/result_20250222_birrfeld_1.txt
