@@ -21,6 +21,38 @@ Project OCAP includes an implementation to receive and transmit radio packets co
 with the EASA ADS-L protocol. The source code for the ADS-L implementation is provided
 as a program library **libadsl** in the src/libadsl directory.
 
+## Getting started
+
+We recommend getting the simulation environment and the automated tests up and running 
+first. The easiest way to do this is to use a Linux environment (e.g. Ubuntu 24.04) with 
+developer tools installed and carry out the following steps:
+
+```bash
+# 1. Compile the libadsl static library
+pushd src/libadsl
+make
+popd
+# 2. Compile the libocap static library
+pushd src/libocap
+make
+popd
+# 3. Compile the simulation environment
+pushd src/sim
+make
+popd
+# 4. Run the automated regression tests
+make
+```
+
+The last "make" executes all test cases declared in the outermost Makefile. The result
+of running the tests is written in the output directory, one file for each test case.
+Ideally, if you haven't changed the source code, the result files should be identical 
+to the reference output files in the repository.
+
+Once the simulation environment is up and running, have a look at how libadsl and libocap
+are integrated in the simulator, as an example of how to integrate these libraries into
+custom software.
+
 ## libadsl
 
 ### Transmitting packets
