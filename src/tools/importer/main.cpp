@@ -1,8 +1,39 @@
 //
-// Simulationsumgebung Entwicklung Funkprotokoll
-// Umwandlung von IGC- und CSV-Files in FLP-Files.
+// main.cpp
 //
-// 09.11.2023 ASR  Erste Version
+// OCAP - Open Collision Avoidance Protocol
+//
+// Driver program for the "flp" importer tool.
+// This tool can create "flp" (flight path) files based on IGC- and CSV-files.
+// The input files are sampled and smoothed with a spline function. To create
+// the flp output file, we then sample the spline function in fixed intervals
+// of 1 second.
+//
+// 09.11.2023 ASR  First version
+//
+// Software License (BSD):
+// Copyright 2023-2025 Classy Code GmbH.
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 2. Redistributions in binary form must reproduce the above copyright notice,
+//    this list of conditions and the following disclaimer in the documentation
+//    and/or other materials provided with the distribution.
+// 3. Neither the name of the copyright holder nor the names of its contribu-
+//    tors may be used to endorse or promote products derived from this soft-
+//    ware without specific prior written permission.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS”
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSE-
+// QUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+// GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+// OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+// DAMAGE.
 //
 
 #include <ctype.h>
@@ -26,19 +57,19 @@
 using namespace linalg;
 using namespace splines;
 
-static void createFlightPathFileFromIgc(IgcFile* igc, FILE* flp);
-static void createFlightPathFileFromCsv(std::ifstream& csv, FILE* flp);
-static void saveFlightPath(Spline_CentripetalCatmullRom& spline, FILE* flp, double tSecMin, double tSecMax);
-static bool endsWith(const char* str, const char* postfix);
+static void createFlightPathFileFromIgc(IgcFile *igc, FILE *flp);
+static void createFlightPathFileFromCsv(std::ifstream &csv, FILE *flp);
+static void saveFlightPath(Spline_CentripetalCatmullRom &spline, FILE *flp, double tSecMin, double tSecMax);
+static bool endsWith(const char *str, const char *postfix);
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     if (argc != 4) {
         std::cerr << "Usage: " << argv[0] << " <input.igc/.csv> <title> <output.flp>" << std::endl;
         exit(-1);
     }
 
-    const char* inFile = &argv[1][0];
+    const char *inFile = &argv[1][0];
 
     bool isIgc = endsWith(inFile, ".igc") || endsWith(inFile, ".IGC");
     bool isCsv = endsWith(inFile, ".csv");
@@ -49,7 +80,7 @@ int main(int argc, char* argv[])
     }
 
     // Create the output file.
-    FILE* fOut = fopen(argv[3], "w");
+    FILE *fOut = fopen(argv[3], "w");
     if (!fOut) {
         std::cerr << "Failed to create flight path file: " << argv[3] << std::endl;
         exit(-3);
@@ -64,7 +95,7 @@ int main(int argc, char* argv[])
         std::cout << "Importing IGC file..." << std::endl;
 
         // Load the IGC file.
-        IgcFile* fIn;
+        IgcFile *fIn;
         IgcParser::parseIgcFile(inFile, &fIn);
         if (!fIn) {
             std::cerr << "Failed to parse IGC file: " << inFile << std::endl;
@@ -92,7 +123,7 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-static void createFlightPathFileFromIgc(IgcFile* igc, FILE* flp)
+static void createFlightPathFileFromIgc(IgcFile *igc, FILE *flp)
 {
     double latMin = igc->latMin;
     double latMax = igc->latMax;
@@ -109,7 +140,7 @@ static void createFlightPathFileFromIgc(IgcFile* igc, FILE* flp)
 
     int ix = 0;
     double oldTs = 0, olderTs = 0, oldestTs = 0;
-    Vector3d* pOld = nullptr;
+    Vector3d *pOld = nullptr;
     int secCtr = 0;
 
     for (int iSec = igc->timestampMin; iSec < igc->timestampMax; iSec++) {
@@ -122,9 +153,9 @@ static void createFlightPathFileFromIgc(IgcFile* igc, FILE* flp)
             continue;
         }
         // lon, lat in degrees, alt in meters
-        IgcPosition* pos = igc->positions[iSec];
+        IgcPosition *pos = igc->positions[iSec];
 
-        Vector3d* p = new Vector3d(pos->lon, pos->lat, pos->altGps);
+        Vector3d *p = new Vector3d(pos->lon, pos->lat, pos->altGps);
         if (pOld && (p->X() == pOld->X() && p->Y() == pOld->Y() && p->Z() == pOld->Z())) {
             continue;
         }
@@ -148,7 +179,7 @@ static void createFlightPathFileFromIgc(IgcFile* igc, FILE* flp)
     saveFlightPath(spline, flp, timestampSecMin, timestampSecMax);
 }
 
-static void createFlightPathFileFromCsv(std::ifstream& csv, FILE* flp)
+static void createFlightPathFileFromCsv(std::ifstream &csv, FILE *flp)
 {
     std::string line;
 
@@ -162,7 +193,7 @@ static void createFlightPathFileFromCsv(std::ifstream& csv, FILE* flp)
     double timestampSecMin = 0;
     double timestampSecMax = 0;
     double oldTs = 0, olderTs = 0, oldestTs = 0;
-    Vector3d* pOld = nullptr;
+    Vector3d *pOld = nullptr;
     int oldSec = 0;
     int ix = 0;
 
@@ -190,7 +221,7 @@ static void createFlightPathFileFromCsv(std::ifstream& csv, FILE* flp)
             continue;
         }
 
-        Vector3d* p = new Vector3d(lon, lat, alt);
+        Vector3d *p = new Vector3d(lon, lat, alt);
 
         // Skip if unchanged.
         if (pOld && (p->X() == pOld->X() && p->Y() == pOld->Y() && p->Z() == pOld->Z())) {
@@ -212,7 +243,7 @@ static void createFlightPathFileFromCsv(std::ifstream& csv, FILE* flp)
     saveFlightPath(spline, flp, timestampSecMin, timestampSecMax);
 }
 
-static void saveFlightPath(Spline_CentripetalCatmullRom& spline, FILE* flp, double tSecMin, double tSecMax)
+static void saveFlightPath(Spline_CentripetalCatmullRom &spline, FILE *flp, double tSecMin, double tSecMax)
 {
     std::cout << "Writing interpolated data..." << std::endl;
 
@@ -225,7 +256,7 @@ static void saveFlightPath(Spline_CentripetalCatmullRom& spline, FILE* flp, doub
     bool hasStartValues = false;
 
     for (double iSec = tSecMin; iSec <= tSecMax; iSec += 1.0) {
-        Vector3d* p = spline.InterpolatePointAtTime(iSec);
+        Vector3d *p = spline.InterpolatePointAtTime(iSec);
 
         double lonDeg = p->X();
         double latDeg = p->Y();
@@ -245,7 +276,7 @@ static void saveFlightPath(Spline_CentripetalCatmullRom& spline, FILE* flp, doub
     }
 }
 
-static bool endsWith(const char* str, const char* postfix)
+static bool endsWith(const char *str, const char *postfix)
 {
     size_t sLen = strlen(str);
     size_t pfLen = strlen(postfix);
